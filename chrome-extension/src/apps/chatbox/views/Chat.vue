@@ -4,6 +4,7 @@ import { Bot, Bug, MessageSquare, Send, Copy, Check, Square } from 'lucide-vue-n
 import { useDraggable, useStorage, useWindowSize } from '@vueuse/core'
 import FlowSelect from '@/shared/components/FlowSelect.vue'
 import Header from '@/shared/components/Header.vue'
+import AddModelDialog from '@/apps/chatbox/components/AddModelDialog.vue'
 import MermaidViewer from '@/apps/chatbox/components/MermaidViewer.vue'
 import AgentExecutionTimeline from '@/apps/chatbox/components/AgentExecutionTimeline.vue'
 import AgentAnswerContent from '@/apps/chatbox/components/AgentAnswerContent.vue'
@@ -14,7 +15,7 @@ import { DEFAULT_MIN_HEIGHT, DEFAULT_MIN_WIDTH, useResizable } from '@/shared/co
 import { Bridge } from '@/extension/runtime/bridge.js'
 import { Nexus } from '@/shared/services/nexus.js'
 import { createAuthGuard } from '@/shared/utils/authGuard.js'
-import { getModelConfigs } from '@/shared/services/modelConfig.js'
+import { getModelConfigs, createModel, deleteModel, getModelDetail, updateModel } from '@/shared/services/modelConfig.js'
 import { Layout } from '@/shared/utils/layout.js'
 import { formatDateTime } from '@/shared/utils/time.js'
 import { renderMarkdown } from '@/shared/utils/markdown.js'
@@ -76,6 +77,10 @@ const agents = [
 // 可选模型列表（由后端配置拉取）
 const models = ref([])
 const isModelLoading = ref(false)
+const addModelDialogVisible = ref(false)
+const addModelDialogEditMode = ref(false)
+const addModelDialogEditData = ref(null)
+const privateModelCount = ref(0)
 
 // 消息列表（包含系统欢迎语）
 const messages = ref([
@@ -636,8 +641,10 @@ async function loadModelConfigs() {
     const configs = await getModelConfigs()
     models.value = (configs || []).map((cfg) => ({
       id: cfg.id,
-      label: cfg.modelName || cfg.modelId || `Model ${cfg.id}`
+      label: cfg.modelName || cfg.modelId || `Model ${cfg.id}`,
+      isPrivate: cfg.userId != null
     }))
+    privateModelCount.value = models.value.filter((m) => m.isPrivate).length
     const cachedModelId = await cache.get(CHAT_SELECTED_MODEL_STORAGE_KEY)
     const hasCurrentSelection = models.value.some((model) => model.id === selectedModel.value)
     const hasCachedSelection = models.value.some((model) => model.id === cachedModelId)
@@ -653,6 +660,55 @@ async function loadModelConfigs() {
     selectedModel.value = models.value.length > 0 ? models.value[0].id : ''
   } finally {
     isModelLoading.value = false
+  }
+}
+
+function openAddModelDialog() {
+  if (privateModelCount.value >= 2) {
+    addMessage('You can have at most 2 private models. Please delete one before adding a new one.', 'ai')
+    return
+  }
+  addModelDialogEditMode.value = false
+  addModelDialogEditData.value = null
+  addModelDialogVisible.value = true
+}
+
+async function handleEditOption(option) {
+  try {
+    const detail = await getModelDetail(option.id)
+    addModelDialogEditMode.value = true
+    addModelDialogEditData.value = detail
+    addModelDialogVisible.value = true
+  } catch (err) {
+    addMessage(`Failed to load model details: ${err.message}`, 'ai')
+  }
+}
+
+async function handleCreateModel(modelData) {
+  await createModel(modelData)
+  addModelDialogVisible.value = false
+  addModelDialogEditMode.value = false
+  addModelDialogEditData.value = null
+  await loadModelConfigs()
+}
+
+async function handleUpdateModel(modelId, modelData) {
+  await updateModel(modelId, modelData)
+  addModelDialogVisible.value = false
+  addModelDialogEditMode.value = false
+  addModelDialogEditData.value = null
+  await loadModelConfigs()
+}
+
+async function handleDeleteModel(option) {
+  try {
+    await deleteModel(option.id)
+    if (selectedModel.value === option.id) {
+      selectedModel.value = ''
+    }
+    await loadModelConfigs()
+  } catch (err) {
+    addMessage(`Failed to delete model: ${err.message}`, 'ai')
   }
 }
 
@@ -1174,6 +1230,12 @@ async function handleGenerate() {
                   min-width="90px"
                   position="top"
                   dropdown-align="end"
+                  :show-add-button="true"
+                  :enable-edit="true"
+                  :enable-delete="true"
+                  @add="openAddModelDialog"
+                  @edit-option="handleEditOption"
+                  @delete-option="handleDeleteModel"
                 />
 
                 <!-- 发送按钮 -->
@@ -1197,5 +1259,15 @@ async function handleGenerate() {
       <div class="resize-handle sw" @pointerdown="handleResizeStart('sw', $event)"></div>
       <div class="resize-handle se" @pointerdown="handleResizeStart('se', $event)"></div>
     </div>
+
+    <AddModelDialog
+      :visible="addModelDialogVisible"
+      :private-model-count="privateModelCount"
+      :submit-handler="handleCreateModel"
+      :edit-mode="addModelDialogEditMode"
+      :edit-data="addModelDialogEditData"
+      :update-handler="handleUpdateModel"
+      @close="addModelDialogVisible = false; addModelDialogEditMode = false; addModelDialogEditData = null"
+    />
   </div>
 </template>

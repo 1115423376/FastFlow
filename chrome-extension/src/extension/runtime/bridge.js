@@ -30,18 +30,29 @@ function ensureInjectScript() {
       injectInFlightPromise = null
     }
 
-    injectUnlistedScript(INJECT_SCRIPT_PATH)
-      .then(() => {
-        injectReady = true
-        Logger.info('通信脚本注入完成')
-        cleanup()
-        resolve()
-      })
-      .catch((error) => {
-        injectReady = false
-        cleanup()
-        reject(new Error(`通信脚本不可用（通常是扩展目录不是最新构建产物）：${error.message}`))
-      })
+    function doInject() {
+      injectUnlistedScript(INJECT_SCRIPT_PATH)
+        .then(() => {
+          injectReady = true
+          Logger.info('通信脚本注入完成')
+          cleanup()
+          resolve()
+        })
+        .catch((error) => {
+          const msg = String(error.message || error)
+          if (msg.includes('Extension context invalidated')) {
+            injectReady = false
+            cleanup()
+            reject(new Error('扩展已更新，请刷新当前页面后重试'))
+            return
+          }
+          injectReady = false
+          cleanup()
+          reject(new Error(`通信脚本不可用（通常是扩展目录不是最新构建产物）：${msg}`))
+        })
+    }
+
+    doInject()
   })
 
   return injectInFlightPromise

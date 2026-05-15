@@ -41,6 +41,12 @@ async def chat_completions(
     if not check_login(context.auth_token):
         raise AuthError("Current user is not logged in")
 
+    # Inject user_id from JWT
+    from nexus.services.auth_service import extract_user
+    user = extract_user(context.auth_token)
+    if user:
+        context.user_id = user.get("uid")
+
     # 校验 mode 是否有效
     if context.mode not in ["chat", "builder", "debugger"]:
         logger.error("Invalid agent mode: %s", context.mode)

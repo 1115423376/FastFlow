@@ -1,11 +1,12 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { authService } from '@/shared/services/auth.js'
 import { useTheme } from '@/shared/composables/useTheme.js'
 import { getExtensionDisplayVersion } from '@/shared/utils/extension-meta.js'
+import { getServerSettings, saveServerSettings } from '@/shared/utils/settings.js'
 import { 
   Moon, Sun, Monitor, 
-  ChevronRight, Shield, Info, LogOut 
+  ChevronRight, Shield, Info, LogOut, Server, Save
 } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -17,6 +18,20 @@ const props = defineProps({
 
 const emit = defineEmits(['logout'])
 const { theme, options: themeOptions, setTheme } = useTheme()
+
+const serverUrl = ref('')
+const saved = ref(false)
+
+onMounted(async () => {
+  const s = await getServerSettings()
+  serverUrl.value = s.serverUrl || ''
+})
+
+async function handleSaveSettings() {
+  await saveServerSettings({ serverUrl: serverUrl.value })
+  saved.value = true
+  setTimeout(() => saved.value = false, 2000)
+}
 
 // 获取头像URL
 const avatarUrl = computed(() => props.user.avatar || null)
@@ -101,6 +116,18 @@ const handleLogout = () => {
           <span class="label">关于版本</span>
         </div>
         <span class="value-tag">{{ extensionVersion }}</span>
+      </div>
+    </div>
+
+    <!-- 服务端地址配置 -->
+    <div class="settings-group">
+      <h4 class="group-title">服务端地址</h4>
+      <div class="server-config">
+        <input v-model="serverUrl" type="text" placeholder="http://172.19.186.130:8969" class="url-input" />
+        <button class="save-btn" @click="handleSaveSettings">
+          <Save size="14" />
+          {{ saved ? '已保存' : '保存地址' }}
+        </button>
       </div>
     </div>
 
@@ -292,6 +319,52 @@ const handleLogout = () => {
   background: var(--bg-surface);
   color: var(--accent-neon);
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Server Config */
+.server-config {
+  background: var(--bg-surface);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.url-input {
+  padding: 8px 10px;
+  background: var(--bg-app);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.url-input:focus {
+  border-color: var(--accent-neon);
+}
+
+.save-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--accent-neon);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.save-btn:hover {
+  opacity: 0.85;
 }
 
 /* Logout Button */

@@ -237,6 +237,17 @@ class CacheManager:
             _llm_runtime_slot(model_config_id).runtime = runtime
 
     @staticmethod
+    def clear_all_llm_runtimes() -> None:
+        """
+        清除所有 LLM 运行时缓存。
+
+        当 models.json 被修改（创建/更新/删除）时调用，
+        确保下一次请求使用最新的模型配置。
+        """
+        with _LLM_RUNTIME_LOCK:
+            _llm_runtime_slot.cache_clear()
+
+    @staticmethod
     def get_session_history(session_id: str) -> BaseChatMessageHistory:
         """
         获取指定 session_id 的短期会话历史对象。

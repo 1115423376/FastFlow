@@ -1,56 +1,103 @@
-import httpx
+import json
+import os
+import time
 from typing import Optional
-from nexus.config.config import get_config
+
+import jwt
+
 from nexus.config.logger import get_logger
 
-settings = get_config()
 logger = get_logger(__name__)
-SUCCESS_CODES = {0, 200}
-CHECK_LOGIN_PATH = "/fastflow/api/v1/auth/checkLogin"
+
+JWT_SECRET = "fastflow-local-dev-jwt-secret-key-2026"
+JWT_ALGORITHM = "HS256"
+_USERS_FILE = os.path.join(os.path.dirname(__file__), "..", "config", "users.json")
 
 
-def _build_headers(auth_token: str) -> dict[str, str]:
-    return {"Authorization": auth_token}
+def _load_users() -> list[dict]:
+    with open(_USERS_FILE, "r") as f:
+        return json.load(f)
 
-
-def _is_success(code: object) -> bool:
-    return code in SUCCESS_CODES
 
 def check_login(auth_token: Optional[str] = None) -> bool:
-    """
-    校验登录状态。
-    """
     if not auth_token:
-        logger.warning("Check login without Authorization, Skip check.")
+        logger.warning("Check login without Authorization, skip.")
         return False
 
-    url = f"{settings.FASTFLOW_API_URL}{CHECK_LOGIN_PATH}"
+    if auth_token.startswith("Bearer "):
+        auth_token = auth_token[7:]
 
     try:
-        # 使用 httpx 校验登录状态，显式禁用代理（避免 VPN/系统代理干扰本地请求）
-        with httpx.Client(trust_env=False) as client:
-            response = client.post(
-                url,
-                headers=_build_headers(auth_token),
-                timeout=5.0,
-                follow_redirects=True,
-            )
-        response.raise_for_status()
+        payload = jwt.decode(auth_token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
 
-        response_data = response.json()
-        if _is_success(response_data.get("code")):
-            return True
+        expire_time = payload.get("expire_time")
+        if expire_time and time.time() * 1000 > expire_time:
+            logger.warning("JWT token expired")
+            return False
 
-        logger.error("Check login failed: %s", response_data.get("message"))
+        uid = payload.get("uid")
+        email = payload.get("email")
+        if not uid or not email:
+            logger.warning("JWT token missing uid or email")
+            return False
+
+        users = _load_users()
+        for u in users:
+            if u.get("uid") == uid and u.get("email") == email and u.get("status") == 1:
+                return True
+
+        logger.warning("User not found or disabled: uid=%s email=%s", uid, email)
         return False
-    except httpx.HTTPStatusError as e:
-        logger.error(
-            "Check login failed with status=%s  body=%s headers=%s",
-            e.response.status_code,
-            e.response.text,
-            dict(e.response.headers),
-        )
+
+    except jwt.ExpiredSignatureError:
+        logger.warning("JWT token expired")
+        return False
+    except jwt.InvalidTokenError as e:
+        logger.warning("Invalid JWT token: %s", e)
         return False
     except Exception as e:
         logger.error("Error checking login: %s", e)
         return False
+
+
+def extract_user(auth_token: Optional[str] = None) -> Optional[dict]:
+    """
+    Extract user info from JWT token.
+    Returns dict with uid, username, email or None if invalid.
+    """
+    if not auth_token:
+        return None
+
+    if auth_token.startswith("Bearer "):
+        auth_token = auth_token[7:]
+
+    try:
+        payload = jwt.decode(auth_token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+
+        expire_time = payload.get("expire_time")
+        if expire_time and time.time() * 1000 > expire_time:
+            return None
+
+        uid = payload.get("uid")
+        email = payload.get("email")
+        if not uid or not email:
+            return None
+
+        users = _load_users()
+        for u in users:
+            if u.get("uid") == uid and u.get("email") == email and u.get("status") == 1:
+                return {
+                    "uid": u["uid"],
+                    "username": u.get("username"),
+                    "email": u["email"],
+                }
+
+        return None
+
+    except jwt.ExpiredSignatureError:
+        return None
+    except jwt.InvalidTokenError:
+        return None
+    except Exception as e:
+        logger.error("Error extracting user: %s", e)
+        return None

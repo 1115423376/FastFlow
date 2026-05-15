@@ -29,14 +29,14 @@ const ELEMENT_SELECTORS = [
 const CHANNELS: Record<ReleaseChannel, Omit<ChannelConfig, 'hostPermissions'>> = {
   development: {
     apiBaseUrl: 'http://127.0.0.1:8080',
-    nexusBaseUrl: 'http://127.0.0.1:9090',
+    nexusBaseUrl: 'http://127.0.0.1:8969',
     authCheckIntervalMs: AUTH_CHECK_INTERVAL_MS,
     elementSelectors: ELEMENT_SELECTORS,
     extensionPublicKey: DEV_EXTENSION_PUBLIC_KEY
   },
   production: {
     apiBaseUrl: 'http://11.120.80.177:8080',
-    nexusBaseUrl: 'http://11.120.80.177:9090',
+    nexusBaseUrl: 'http://11.120.80.177:8969',
     authCheckIntervalMs: AUTH_CHECK_INTERVAL_MS,
     elementSelectors: ELEMENT_SELECTORS,
     extensionPublicKey: PROD_EXTENSION_PUBLIC_KEY

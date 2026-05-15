@@ -1,8 +1,0 @@
-target/*
-!target/api-*.jar
-.idea/
-*.iml
-sql/
-
-.git/
-.DS_Store

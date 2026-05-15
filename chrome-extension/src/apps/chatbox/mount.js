@@ -10,6 +10,7 @@ import chatCss from '@/shared/styles/components/chat.css?inline'
 import flowSelectCss from '@/shared/styles/components/flow-select.css?inline'
 import headerCss from '@/shared/styles/components/header.css?inline'
 import agentRuntimeCss from '@/shared/styles/components/agent-runtime.css?inline'
+import addModelDialogCss from '@/shared/styles/components/add-model-dialog.css?inline'
 
 /**
  * MountManager
@@ -96,7 +97,8 @@ export class MountManager {
       chatCss, 
       flowSelectCss, 
       headerCss,
-      agentRuntimeCss
+      agentRuntimeCss,
+      addModelDialogCss
     ].join('\n')
     shadowRoot.appendChild(styleTag)
   }

@@ -8,6 +8,6 @@ WORKDIR /app
 
 USER fastflow
 
-EXPOSE 9090
+EXPOSE 8969
 
 ENTRYPOINT ["python", "-m", "nexus.main"]

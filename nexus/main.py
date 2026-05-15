@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import uvicorn
 from nexus.api.routes.router import base_router
+from nexus.api.routes.api_compat import router as api_compat_router
 from nexus.config.build_info import get_build_info
 from nexus.config.config import get_config
 from nexus.config.logger import setup_logging, get_logger
@@ -59,6 +60,8 @@ def create_app() -> FastAPI:
 
     # 挂载业务路由
     application.include_router(base_router)
+    # API 兼容路由（替代 Spring Boot API）
+    application.include_router(api_compat_router)
 
     # 注册全局异常处理器
     register_exception_handlers(application)

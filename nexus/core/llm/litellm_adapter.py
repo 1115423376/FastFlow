@@ -7,13 +7,30 @@ LiteLLM 统一适配层。
 1) 根据模型配置创建 ChatLiteLLM 实例
 2) 归一化 tool_choice 兼容策略
 3) 暴露 thinking 是否启用的读取能力（仅用于日志与策略）
+
+已知限制：
+- langchain_litellm 的 ChatLiteLLM 仅对少数内置 provider（openai/anthropic/azure 等）
+  通过 named api_key 字段传递凭证；其余 provider（deepseek/qwen/glm 等）必须依赖
+  model_kwargs 中的 api_key 字段才能正确生成 Authorization 头。
 """
 
+import os
 from typing import Any, Dict, Optional
 
 from langchain_litellm import ChatLiteLLM
 
 from nexus.services.model_config_service import ModelConfig
+
+# langchain_litellm 在 validate_environment 中显式处理这些 provider 的 api_key 字段：
+# openai, azure, anthropic, replicate, cohere, openrouter, huggingface, togetherai
+_BUILTIN_API_KEY_PROVIDERS = frozenset({
+    "openai", "azure", "anthropic", "replicate",
+    "cohere", "openrouter", "huggingface", "togetherai",
+})
+
+
+def _provider_env_key(provider: str) -> str:
+    return f"{provider.upper()}_API_KEY"
 
 
 class LiteLLMAdapter:
@@ -58,7 +75,12 @@ class LiteLLMAdapter:
         """
         构建 ChatLiteLLM 实例。
         """
+        provider = (model_config.provider or "").strip().lower()
         model_kwargs = self.build_model_params(model_config)
+
+        if provider and provider not in _BUILTIN_API_KEY_PROVIDERS:
+            model_kwargs["api_key"] = model_config.api_key
+
         llm_kwargs: Dict[str, Any] = {
             "model": model_config.model_id,
             "api_key": model_config.api_key,

@@ -1,167 +1,134 @@
 <div align="center">
   <img src="./chrome-extension/src/public/logo.png" width="160" alt="FastFlow Logo" />
   <h1>FastFlow</h1>
-  <p>基于 Chrome Extension + Nexus + API 的 AI 工作流 Copilot</p>
+  <p>AI 工作流 Copilot — 页面内嵌聊天框，支持多模型、流式对话、工作流感知</p>
   <p>
-    <a href="https://github.com/EayonLee/FastFlow">
-      <img alt="AI Workflow Copilot" src="https://img.shields.io/badge/AI%20Workflow-Copilot-0f172a?style=flat-square" />
-    </a>
     <a href="https://developer.chrome.com/docs/extensions/develop/migrate/what-is-mv3">
       <img alt="Chrome Extension MV3" src="https://img.shields.io/badge/Chrome%20Extension-MV3-2563eb?style=flat-square&logo=googlechrome&logoColor=white" />
     </a>
-    <a href="./chrome-extension/README.md">
-      <img alt="WXT Vue 3" src="https://img.shields.io/badge/WXT-Vue%203-059669?style=flat-square&logo=vuedotjs&logoColor=white" />
+    <a href="https://vuejs.org">
+      <img alt="Vue 3" src="https://img.shields.io/badge/Vue-3-059669?style=flat-square&logo=vuedotjs&logoColor=white" />
     </a>
-    <a href="./nexus/main.py">
-      <img alt="FastAPI Nexus" src="https://img.shields.io/badge/FastAPI-Nexus-0f766e?style=flat-square&logo=fastapi&logoColor=white" />
+    <a href="https://fastapi.tiangolo.com">
+      <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-Nexus-0f766e?style=flat-square&logo=fastapi&logoColor=white" />
     </a>
-    <a href="./api/pom.xml">
-      <img alt="Spring Boot API" src="https://img.shields.io/badge/Spring%20Boot-API-16a34a?style=flat-square&logo=springboot&logoColor=white" />
+    <a href="https://docs.litellm.ai">
+      <img alt="LiteLLM" src="https://img.shields.io/badge/LiteLLM-enabled-7c3aed?style=flat-square" />
     </a>
-    <img alt="中文 README" src="https://img.shields.io/badge/README-%E4%B8%AD%E6%96%87-0284c7?style=flat-square" />
-    <img alt="Active Development" src="https://img.shields.io/badge/Status-Active%20Development-f59e0b?style=flat-square" />
-    <img alt="Architecture Extension API Nexus" src="https://img.shields.io/badge/Architecture-Extension%20%2B%20API%20%2B%20Nexus-475569?style=flat-square" />
-  </p>
-  <p>
-    <a href="https://github.com/EayonLee/FastFlow/stargazers">
-      <img alt="GitHub stars" src="https://img.shields.io/github/stars/EayonLee/FastFlow?style=flat-square&logo=github" />
-    </a>
-    <a href="https://github.com/EayonLee/FastFlow/issues">
-      <img alt="GitHub issues" src="https://img.shields.io/github/issues/EayonLee/FastFlow?style=flat-square&logo=github" />
-    </a>
-    <a href="https://github.com/EayonLee/FastFlow/commits/main">
-      <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/EayonLee/FastFlow?style=flat-square&logo=git" />
-    </a>
-  </p>
-  <p>
-    <a href="#快速开始">快速开始</a>
-    ·
-    <a href="#通过-github-releases-安装-chrome-扩展">安装插件</a>
-    ·
-    <a href="./chrome-extension/README.md">扩展文档</a>
-    ·
-    <a href="https://github.com/EayonLee/FastFlow">GitHub 仓库</a>
+    <img alt="Python 3.10+" src="https://img.shields.io/badge/Python-3.10%2B-2563eb?style=flat-square&logo=python&logoColor=white" />
+    <img alt="Architecture" src="https://img.shields.io/badge/Architecture-Extension%20%2B%20Nexus-475569?style=flat-square" />
   </p>
 </div>
 
 ## 项目简介
 
-FastFlow 是一个围绕工作流理解、问答辅助和智能体执行链路构建的全栈项目。它由三部分组成：
+FastFlow 是一个 AI 工作流 Copilot，由两部分组成：
 
-- `chrome-extension/`：基于 WXT + Vue 3 的 Chrome 扩展，负责在页面中提供聊天框、Popup、工作流导入导出与注入桥。
-- `api/`：基于 Spring Boot 3 的业务 API，负责账户、鉴权、配置与服务编排入口。
-- `nexus/`：基于 FastAPI 的智能体执行层，负责模型调用、工具调度、流式事件输出与工作流上下文处理。
+- **Chrome 扩展**（WXT + Vue 3）：注入到任意网页中的聊天框，支持悬浮气泡、可拖拽面板、多模型切换、Slash 协议编排。
+- **Nexus 服务**（FastAPI，单进程，端口 8969）：统一处理认证、模型配置、LLM 调用、SSE 流式输出。
 
-如果你只关心浏览器扩展开发，可以直接阅读 [chrome-extension/README.md](./chrome-extension/README.md)。  
-如果你要跑通整套链路，根 README 是首选入口。
-
-## 通过 GitHub Releases 安装 Chrome 扩展
-
-如果你只是想使用插件，而不是参与开发，推荐直接通过发行版安装，不需要本地启动 `api/` 和 `nexus/`。
-
-发行版入口：
-
-- 仓库右侧 `Releases`
-- 直接访问：[FastFlow Releases](https://github.com/EayonLee/FastFlow/releases)
-
-安装步骤：
-
-1. 打开 [FastFlow Releases](https://github.com/EayonLee/FastFlow/releases)
-2. 下载最新版本中的扩展发行包，文件名类似 `fastflow-<version>-chrome.zip`
-3. 把 zip 解压到一个本地目录，例如 `~/Downloads/fastflow-1.1.1-chrome/`
-4. 打开 Chrome，访问 `chrome://extensions`
-5. 打开右上角“开发者模式”
-6. 点击“加载已解压的扩展程序”
-7. 选择刚才解压后的目录，而不是 zip 文件本身
-
-注意：
-
-- Chrome 这里加载的是“解压后的目录”，不是直接导入 zip
-- 如果你升级到新版本，重新下载新的 release 并解压后，在扩展页点击刷新，或重新加载新目录即可
-- 发行版安装的详细说明也写在 [chrome-extension/README.md](./chrome-extension/README.md) 中
-
-## 核心能力
-
-- 页面内嵌聊天框：在目标页面内直接发起工作流问答，而不是跳转到独立后台页面。
-- 工作流感知问答：聊天请求会携带当前工作流图和工作流元信息，Nexus 可以基于上下文生成回答。
-- 流式事件消费：扩展通过后台 service worker 代理 SSE，避免页面侧直接访问后端带来的 CORS、Mixed Content 和上下文隔离问题。
-- 开发 / 生产双渠道构建：Chrome 扩展支持独立的 `development` / `production` 产物与固定扩展 ID 策略。
-- 清晰的三段式架构：扩展负责交互，API 负责业务入口，Nexus 负责智能体与模型执行。
+已从原三段式架构精简为**两段式**（Extension + Nexus），去掉 Java / Spring Boot / PostgreSQL 依赖。模型和用户配置存于 JSON 文件，修改即生效，零外部数据库。
 
 ## 架构总览
 
 ```mermaid
 flowchart LR
-    U["用户 / 浏览器页面"]
-    E["Chrome 扩展\nWXT + Vue 3\nChatbox / Popup / Inject"]
-    A["FastFlow API\nSpring Boot\n:8080"]
-    N["Nexus\nFastAPI\n:9090"]
-    L["LLM / Tools / Workflow Runtime"]
+    U["Chrome 浏览器"]
+    E["Chrome 扩展\nWXT + Vue 3"]
+    N["Nexus :8969\nFastAPI\nAuth / Model Config / LLM"]
+    L["LLM API\nDeepSeek / OpenAI / MiniMax / ..."]
 
     U --> E
-    E --> A
     E --> N
-    A --> N
     N --> L
 ```
 
-补充说明：
+**一个进程，一个端口**：Nexus 在 8969 端口同时提供认证、模型 CRUD、智能体对话、Slash 面板等全部能力。扩展通过 Shadow DOM 隔离注入页面，所有后端请求统一走 background service worker，屏蔽跨域和宿主隔离问题。
 
-- `chrome-extension` 通过 background service worker 统一访问 `API` 和 `Nexus`。
-- `Nexus` 负责流式输出 `answer.delta`、`thinking.delta`、`run.completed` 等事件。
-- `API` 默认运行在 `8080`，`Nexus` 默认运行在 `9090`。
+## 核心功能
 
-## 仓库结构
+### 聊天交互
+- 悬浮气泡开关，任意网页一键唤出
+- 可拖拽调整位置，四角拖拽调整面板尺寸
+- 流式 SSE 响应（打字机效果）
+- 自动跟随最新消息滚动
+- 消息复制、Mermaid 图表放大预览（支持平移/缩放）
+- 中途停止生成
 
-| 目录 | 说明 |
-| --- | --- |
-| [`chrome-extension/`](./chrome-extension/README.md) | Chrome MV3 扩展。包含页面内聊天框、Popup、内容脚本、页面注入桥与构建配置。 |
-| [`api/`](./api/README.md) | Spring Boot 业务 API。默认端口 `8080`，并可代理或编排对 Nexus 的访问。 |
-| [`nexus/`](./nexus/README.md) | FastAPI 智能体层。默认端口 `9090`，负责 LLM、工具链、流式执行与事件输出。 |
+### 模型管理
+- 模型下拉选择，切换即时生效
+- **添加私有模型**：支持配置名称、Model ID、Provider、API Key、Base URL
+- **编辑私有模型**：悬停下拉项显示编辑按钮，复用添加弹窗
+- **删除私有模型**：悬停显示删除按钮
+- 每用户最多 2 个私有模型（公共模型不限）
+- Provider 选择时自动填充默认 Base URL
+- Base URL 校验（防止 API Key 误填入 URL）
+
+### 协议编排（Protocol Composer）
+- 输入 `/` 触发技能面板，选择并插入技能引用
+- 输入 `#` 触发节点面板，选择并插入工作流节点引用
+- 消息中技能/节点以可视化 Chip 展示
+- 键盘导航（↑↓ Enter Esc Tab）
+
+### 智能体模式
+| 模式 | 图标 | 说明 |
+|------|------|------|
+| Deep Chat | 💬 | 通用 AI 对话，需选择模型 |
+| SOLO Builder | 🤖 | 工作流自动生成（规划中） |
+| SOLO Debugger | 🐛 | 工作流智能排错（规划中） |
+
+### 主题与设置
+- 深色 / 浅色 / 跟随系统 三种主题
+- Mermaid 图表随主题自动切换配色
+- Popup 设置面板：主题切换、服务地址配置、版本信息
+- 登录 / 注册（支持邀请码）
+
+## 支持的 LLM Provider
+
+| Provider | 默认 Base URL | LiteLLM Provider | 备注 |
+|----------|--------------|------------------|------|
+| OpenAI | `https://api.openai.com/v1` | openai | — |
+| Anthropic | `https://api.anthropic.com` | anthropic | — |
+| DeepSeek | `https://api.deepseek.com/v1` | deepseek | 需 `/v1` 后缀 |
+| MiniMax | `https://api.minimaxi.com/v1` | openai | OpenAI 兼容模式 |
+| Qwen (通义千问) | `https://dashscope.aliyuncs.com/compatible-mode/v1` | — | — |
+| GLM (智谱) | `https://open.bigmodel.cn/api/paas/v4` | — | — |
+| Moonshot | `https://api.moonshot.cn/v1` | — | — |
+| Other | 自定义 | — | 手动输入 URL |
+
+> 提示：DeepSeek 的 base_url 必须以 `/v1` 结尾，否则会返回 "Authentication Fails (governor)"。
 
 ## 快速开始
 
-### 1. 环境要求
+### 环境要求
 
-- Node.js 与 npm
-- Python 3.10+
-- Java 17
-- Maven
+- **Python 3.10+**
+- **Node.js 18+**（仅构建扩展时需要）
+- **Google Chrome**（支持 Manifest V3）
+- 零外部数据库依赖
 
-建议优先使用较新的 Node.js LTS 版本。
-
-### 2. 启动 Nexus
-
-在仓库根目录执行：
+### 1. 启动 Nexus 服务
 
 ```bash
+cd nexus
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r nexus/requirements.txt
-python -m nexus.main
+pip install -r requirements.txt
+
+# 从仓库根目录启动（确保 PYTHONPATH 正确）
+cd /home/tdq/fastflow
+PYTHONPATH=/home/tdq/fastflow python -m nexus.main
 ```
 
-默认监听端口：`9090`
+默认监听：`http://0.0.0.0:8969`
 
-如需调整 Nexus 配置，优先查看：
-
-- [`nexus/.env`](./nexus/.env)
-- [`nexus/main.py`](./nexus/main.py)
-
-### 3. 启动 API
-
+验证启动成功：
 ```bash
-cd api
-mvn spring-boot:run
+curl http://localhost:8969/fastflow/nexus/v1/health
+# {"code":200,"data":{"status":"Online","service":"FastFlow-Nexus","version":"1.1.0"}}
 ```
 
-默认监听端口：`8080`
-
-配置入口：
-
-- [`api/src/main/resources/application.yml`](./api/src/main/resources/application.yml)
-
-### 4. 构建并加载 Chrome 扩展（开发方式）
+### 2. 构建 Chrome 扩展
 
 ```bash
 cd chrome-extension
@@ -169,86 +136,278 @@ npm install
 npm run build:dev
 ```
 
-构建完成后，在 Chrome 中加载：
+产物目录：`chrome-extension/dist/development/`
 
-1. 打开 `chrome://extensions`
-2. 打开右上角“开发者模式”
-3. 点击“加载已解压的扩展程序”
-4. 选择目录 `chrome-extension/dist/development`
+### 3. 加载扩展
 
-如果你要持续联调，可以使用：
+1. 打开 Chrome，访问 `chrome://extensions`
+2. 开启右上角「开发者模式」
+3. 点击「加载已解压的扩展程序」
+4. 选择 `chrome-extension/dist/development/`
+
+### 4. 配置扩展连接地址
+
+新建 `chrome-extension/.env.development.local`：
+
+```bash
+WXT_API_BASE_URL=http://127.0.0.1:8969
+WXT_NEXUS_BASE_URL=http://127.0.0.1:8969
+```
+
+> 如果 Nexus 和 Chrome 不在同一台机器（如 WSL + Windows），将 `127.0.0.1` 换成 Nexus 宿主机的 IP。
+
+### 5. 生成邀请码并注册账号
+
+Nexus 部署后需要先生成邀请码，用户凭邀请码注册：
+
+```bash
+cd /home/tdq/fastflow
+source nexus/.venv/bin/activate
+PYTHONPATH=/home/tdq/fastflow python3 nexus/scripts/generate_invite_codes.py --count 10
+# 输出示例：
+#   V4E0ZP
+#   YGC8AY
+#   ...
+```
+
+1. 点击扩展图标 → 注册账号，填写邀请码
+2. 登录后，在聊天框底部模型下拉菜单中点击「Add Model」
+3. 填写模型信息（Provider 选择后 Base URL 自动填充）
+4. 保存后在模型下拉中切换即可使用
+
+## 服务配置
+
+### Nexus 环境变量 (`nexus/.env`)
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `APP_HOST` | `0.0.0.0` | 监听地址 |
+| `APP_PORT` | `8969` | 监听端口 |
+| `APP_VERSION` | `1.1.1` | 服务版本号 |
+| `LOG_LEVEL` | `INFO` | 日志级别 |
+| `LOG_FILE_PATH` | `logs/engine.log` | 日志文件路径 |
+| `SESSION_HISTORY_MAX_TURNS` | `10` | 单会话最大对话轮数 |
+| `SESSION_HISTORY_EXPIRE_SECONDS` | `3600` | 会话过期时间（秒，≤0 永不过期） |
+| `TOOL_MAX_CALLS_PER_QUESTION` | `50` | 单次提问最大工具调用次数 |
+| `MODEL_STREAM_TOTAL_TIMEOUT_SECONDS` | `420` | 单轮流式总超时（秒） |
+
+### 模型配置 (`nexus/config/models.json`)
+
+```json
+[
+  {
+    "id": 10001,
+    "model_name": "DeepSeek Chat",
+    "model_id": "deepseek-chat",
+    "provider": "deepseek",
+    "api_key": "sk-your-api-key",
+    "base_url": "https://api.deepseek.com/v1",
+    "model_params": {},
+    "enabled": true,
+    "user_id": null
+  }
+]
+```
+
+| 字段 | 说明 |
+|------|------|
+| `id` | 唯一标识（自动递增） |
+| `model_name` | 显示名称 |
+| `model_id` | API 调用时的 model 参数 |
+| `provider` | LiteLLM provider 名称 |
+| `api_key` | API 密钥 |
+| `base_url` | API 地址 |
+| `model_params` | 额外模型参数（如 `{"enable_thinking": true}`） |
+| `enabled` | 是否启用 |
+| `user_id` | `null` = 公共模型，数字 = 私有模型归属用户 |
+
+> 模型配置可通过扩展 UI 管理，也可直接编辑 JSON。直接编辑后运行以下命令使其生效（无需重启服务）：
+> ```bash
+> source nexus/.venv/bin/activate
+> PYTHONPATH=/home/tdq/fastflow python3 nexus/scripts/reload_models.py
+> ```
+
+### 用户管理 (`nexus/config/users.json`)
+
+用户凭邀请码通过扩展注册页面注册，密码使用 bcrypt 加密存储。
+
+### 邀请码管理 (`nexus/config/invite_codes.json`)
+
+邀请码为一次性使用，注册后自动标记为已用。
+
+```bash
+# 生成新邀请码
+source nexus/.venv/bin/activate
+PYTHONPATH=/home/tdq/fastflow python3 nexus/scripts/generate_invite_codes.py --count 10
+
+# 查看当前邀请码状态
+cat nexus/config/invite_codes.json
+```
+
+邀请码格式：
+```json
+[{"code": "V4E0ZP", "used": false, "used_by": null, "created_at": "...", "used_at": null}]
+```
+
+### 管理脚本
+
+| 脚本 | 说明 |
+|------|------|
+| `nexus/scripts/generate_invite_codes.py` | 生成一次性邀请码 |
+| `nexus/scripts/reload_models.py` | 手动编辑 models.json 后清空缓存使其生效 |
+
+## API 接口
+
+### Nexus 智能体接口（8969 端口）
+
+| 接口 | 方法 | 说明 |
+|------|------|------|
+| `/fastflow/nexus/v1/health` | GET | 健康检查 |
+| `/fastflow/nexus/v1/agent/chat/completions` | POST | 智能体流式对话（SSE） |
+| `/fastflow/nexus/v1/agent/chat/cancel` | POST | 取消正在运行的请求 |
+| `/fastflow/nexus/v1/slash/catalog` | GET | Slash 面板技能目录 |
+
+### API 兼容接口（8969 端口，替代原 Java API）
+
+| 接口 | 方法 | 说明 |
+|------|------|------|
+| `/fastflow/api/v1/auth/login` | POST | 登录 |
+| `/fastflow/api/v1/auth/register` | POST | 注册 |
+| `/fastflow/api/v1/auth/checkLogin` | POST | 检查登录状态 |
+| `/fastflow/api/v1/model_config/list` | GET | 模型列表 |
+| `/fastflow/api/v1/model_config` | POST | 添加模型 |
+| `/fastflow/api/v1/model_config/{id}` | GET | 模型详情 |
+| `/fastflow/api/v1/model_config/{id}` | PUT | 更新模型 |
+| `/fastflow/api/v1/model_config/{id}` | DELETE | 删除模型 |
+
+### SSE 事件类型
+
+| 事件 | 说明 |
+|------|------|
+| `run.started` | 请求开始 |
+| `phase.started` | 阶段开始 |
+| `phase.completed` | 阶段完成 |
+| `answer.delta` | 回答增量文本 |
+| `answer.done` | 回答完成 |
+| `thinking.delta` | 思考过程增量 |
+| `thinking.summary` | 思考过程摘要 |
+| `run.completed` | 请求完成（终态） |
+| `error` | 错误（终态） |
+
+## 扩展命令
 
 ```bash
 cd chrome-extension
-npm run watch
+
+npm run watch        # 持续联调（development 渠道）
+npm run build:dev    # 构建开发版 → dist/development/
+npm run build:prod   # 构建正式版 → dist/production/
+npm run zip:prod     # 构建正式版并打包 zip
+npm run typecheck    # TypeScript 类型检查
+npm run clean        # 清理构建缓存
 ```
 
-如果你要构建正式版：
+### 构建渠道
+
+| 渠道 | 产物目录 | 用途 |
+|------|---------|------|
+| `development` | `dist/development/` | 本地联调 |
+| `production` | `dist/production/` | 用户使用、分发 |
+
+两个渠道使用不同的扩展公钥，因此扩展 ID 不同。
+
+### 修改生产环境地址
+
+编辑 `chrome-extension/src/extension/config/channels.ts`：
+
+```typescript
+production: {
+  apiBaseUrl: 'http://your-server:8969',
+  nexusBaseUrl: 'http://your-server:8969',
+}
+```
+
+## 仓库结构
+
+```
+fastflow/
+├── nexus/                     # 服务端（FastAPI）
+│   ├── agents/                # 智能体实现
+│   ├── api/                   # 路由层 + API 兼容
+│   ├── common/                # 通用异常
+│   ├── config/                # 配置 + 模型/用户 JSON
+│   ├── core/                  # LLM / Cache / Event / Tools / Skills
+│   ├── services/              # 业务编排层
+│   ├── skills/                # 本地技能
+│   ├── main.py                # 应用入口
+│   └── requirements.txt
+├── chrome-extension/          # Chrome 扩展（WXT + Vue 3）
+│   └── src/
+│       ├── apps/chatbox/      # 聊天框应用
+│       ├── apps/popup/        # Popup 应用
+│       ├── entrypoints/       # WXT 入口（background/content/inject）
+│       ├── extension/         # 扩展运行时
+│       └── shared/            # 共享组件/服务/样式
+└── README.md
+```
+
+## 常见问题
+
+### DeepSeek 报 "Authentication Fails (governor)"
+
+Base URL 必须以 `/v1` 结尾。正确：`https://api.deepseek.com/v1`。
+
+### 模型配置修改后不生效
+
+Nexus 内部缓存了 LLM 运行时。重启 Nexus 即可清空缓存。新版本已加入缓存自动失效机制（修改模型后自动清空），如果问题仍然存在，手动重启：
 
 ```bash
-cd chrome-extension
-npm run build:prod
+# 停掉旧进程
+pkill -f "nexus.main"
+
+# 用虚拟环境重新启动
+source nexus/.venv/bin/activate
+cd /home/tdq/fastflow
+PYTHONPATH=/home/tdq/fastflow python -m nexus.main
 ```
 
-## Chrome 扩展开发与加载
+### 扩展界面卡在 loading
 
-当前扩展子项目已经迁移到 `WXT + Vue 3`，并统一了开发 / 生产双渠道构建。
+1. 检查 Nexus 健康状态：`curl http://localhost:8969/fastflow/nexus/v1/health`
+2. 确认扩展 `.env.development.local` 地址正确
+3. 检查 Chrome DevTools Console 是否有错误
 
-常用命令：
+### 端口被占用
 
 ```bash
-cd chrome-extension
+# 查看占用 8969 端口的进程
+lsof -ti:8969
 
-npm run watch       # development 渠道联调
-npm run build:dev   # 构建开发版未打包扩展
-npm run build:prod  # 构建正式版未打包扩展
-npm run zip:prod    # 生成正式版 zip
-npm run typecheck   # 类型检查
-npm run clean       # 清理 dist 与 WXT 缓存
+# 强制终止
+kill -9 $(lsof -ti:8969)
 ```
 
-几个关键事实：
-
-- `development` 与 `production` 使用不同渠道配置和不同扩展 ID。
-- 开发环境地址只允许通过 `chrome-extension/.env.development.local` 覆盖。
-- 正式环境地址和扩展公钥由扩展内部配置统一管理。
-
-完整扩展说明见：
-
-- [chrome-extension/README.md](./chrome-extension/README.md)
-
-## 子模块说明
-
-### Chrome 扩展
-
-- 技术栈：WXT、Vue 3、Chrome MV3
-- 关注点：页面聊天框、Popup、content script、inject script、background 网络代理
-- 文档入口：[chrome-extension/README.md](./chrome-extension/README.md)
-
-### API
-
-- 技术栈：Spring Boot 3、MyBatis Plus、PostgreSQL
-- 关注点：业务接口、鉴权、配置、Nexus 编排入口
-- 配置入口：[application.yml](./api/src/main/resources/application.yml)
-- 文档入口：[api/README.md](./api/README.md)
-
-### Nexus
-
-- 技术栈：FastAPI、LangChain、LangGraph、LiteLLM
-- 关注点：智能体执行、工具调用、SSE 流式事件、工作流上下文
-- 运行入口：[main.py](./nexus/main.py)
-- 文档入口：[nexus/README.md](./nexus/README.md)
-
-## 贡献方式
-
-欢迎通过 Issue 或 Pull Request 参与改进：
-
-- 提交问题：[Issues](https://github.com/EayonLee/FastFlow/issues)
-- 提交代码：[Pull Requests](https://github.com/EayonLee/FastFlow/pulls)
-
-建议在提交前至少完成：
+如果 Nexus 运行在 screen 会话中：
 
 ```bash
-cd chrome-extension
-npm run typecheck
+screen -S nexus -X stuff $'\003'    # 发送 Ctrl+C
+screen -S nexus -X stuff '启动命令\n'  # 重新启动
 ```
+
+## 技术栈
+
+| 组件 | 技术 |
+|------|------|
+| 浏览器扩展框架 | WXT 0.20 |
+| 前端 UI | Vue 3 + TipTap |
+| 后端框架 | FastAPI |
+| LLM 调用 | LiteLLM + LangChain |
+| 流式输出 | SSE (Server-Sent Events) |
+| 认证 | JWT + bcrypt |
+| 配置存储 | JSON 文件（热加载） |
+| 缓存 | LRU Cache（进程内） |
+| 构建工具 | Vite + vue-tsc |
+
+## 许可
+
+MIT License

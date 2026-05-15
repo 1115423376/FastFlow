@@ -9,7 +9,7 @@
     <img alt="LangGraph" src="https://img.shields.io/badge/LangGraph-1.0-0f172a?style=flat-square" />
     <img alt="LiteLLM" src="https://img.shields.io/badge/LiteLLM-enabled-7c3aed?style=flat-square" />
     <img alt="SSE Stream" src="https://img.shields.io/badge/Transport-SSE-f59e0b?style=flat-square" />
-    <img alt="Port 9090" src="https://img.shields.io/badge/Port-9090-0284c7?style=flat-square" />
+    <img alt="Port 8969" src="https://img.shields.io/badge/Port-8969-0284c7?style=flat-square" />
   </p>
   <p>
     <a href="../README.md">返回仓库首页</a>
@@ -30,7 +30,7 @@
 - 提供 Slash 面板目录
 - 维护短期会话历史与工具循环保护
 
-默认端口：`9090`
+默认端口：`8969`
 
 ## 快速开始
 
@@ -58,7 +58,7 @@ python -m nexus.main
 默认监听地址与端口：
 
 - Host：`0.0.0.0`
-- Port：`9090`
+- Port：`8969`
 
 ## 常用命令
 
@@ -95,7 +95,7 @@ source .venv/bin/activate
 | --- | --- |
 | `APP_NAME` | 服务名，默认 `FastFlow-Nexus` |
 | `APP_HOST` | 监听地址，默认 `0.0.0.0` |
-| `APP_PORT` | 监听端口，默认 `9090` |
+| `APP_PORT` | 监听端口，默认 `8969` |
 | `APP_VERSION` | 服务版本 |
 | `FASTFLOW_API_URL` | API 模块地址，默认 `http://localhost:8080` |
 | `LOG_LEVEL` | 日志级别 |
@@ -236,7 +236,7 @@ Docker 入口：
 
 镜像行为：
 
-- 暴露端口 `9090`
+- 暴露端口 `8969`
 - 健康检查路径为 `/fastflow/nexus/v1/health`
 - 运行入口固定为：
 
@@ -281,7 +281,7 @@ docker build -f Dockerfile -t fastflow-nexus:latest .
 
 优先确认：
 
-- `APP_PORT` 是否真的是 `9090`
+- `APP_PORT` 是否真的是 `8969`
 - 扩展的 `nexusBaseUrl` 是否指向正确地址
 - `Authorization` 是否有效
 

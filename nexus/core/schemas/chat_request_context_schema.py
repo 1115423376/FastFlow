@@ -62,6 +62,7 @@ class ChatRequestContext(BaseModel):
     session_id: Optional[str] = Field(None, description="会话 ID")
     request_id: Optional[str] = Field(None, description="单次请求 ID")
     auth_token: Optional[str] = Field(None, description="用户认证 Token", exclude=True)
+    user_id: Optional[int] = Field(None, description="用户 UID（从 JWT 中提取，不接受客户端传入）", exclude=True)  # NEW
 
 
 class ChatCancelRequest(BaseModel):

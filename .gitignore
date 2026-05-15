@@ -1,4 +1,4 @@
-# Python caches
+# Python
 __pycache__/
 *.py[cod]
 
@@ -6,42 +6,22 @@ __pycache__/
 .venv/
 venv/
 
-# IDE/settings
+# IDE
 .idea/
 .vscode/
 .claude/
-.openmcp/
-.trae/
-.shared/
-.cursor/
 
-# build artifacts
-web/node_modules/
-web/dist/
-web/.npm-cache/
+# Chrome extension build artifacts
 chrome-extension/dist/
 chrome-extension/.wxt/
 chrome-extension/node_modules/
 chrome-extension/.env*.local
 
-# logs
-.logs/
+# Nexus
 nexus/logs/
-nexus/.idea/
-api/logs/
-api/target/
-api/.idea/
+nexus/config/users.json
+nexus/config/invite_codes.json
+nexus/deps/
 
-# OS noise
+# OS
 .DS_Store
-
-# Local env & secrets
-engine/.env
-# nexus/.env - commented out, needs to be committed
-# web/.env - commented out, needs to be committed
-
-# Generated artifacts
-engine/my_workflow.json
-engine/output_example.json
-
-docs/

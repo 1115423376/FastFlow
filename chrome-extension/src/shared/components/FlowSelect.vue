@@ -1,12 +1,6 @@
 <script setup>
-/**
- * FlowSelect 组件
- * 作用：通用的下拉选择组件，支持自定义图标和颜色。
- * 实现：使用全局点击事件监听实现点击外部关闭，兼容 Shadow DOM 环境。
- * 注意：父容器需要没有 overflow: hidden，否则菜单会被遮挡。
- */
 import { ref, computed, watch, onUnmounted } from 'vue'
-import { ChevronDown } from 'lucide-vue-next'
+import { ChevronDown, Lock, Plus, X, Pencil } from 'lucide-vue-next'
 
 const props = defineProps({
   modelValue: {
@@ -16,7 +10,6 @@ const props = defineProps({
   options: {
     type: Array,
     required: true,
-    // 格式: [{ id, label, icon?, color? }]
   },
   placeholder: {
     type: String,
@@ -24,12 +17,12 @@ const props = defineProps({
   },
   position: {
     type: String,
-    default: 'top', // 'top' | 'bottom'
+    default: 'top',
     validator: (value) => ['top', 'bottom'].includes(value)
   },
   width: {
     type: String,
-    default: 'auto' // 改为 auto 配合 min-width 使用
+    default: 'auto'
   },
   minWidth: {
     type: String,
@@ -39,82 +32,84 @@ const props = defineProps({
     type: String,
     default: 'start',
     validator: (value) => ['start', 'end'].includes(value)
+  },
+  showAddButton: {
+    type: Boolean,
+    default: false
+  },
+  addLabel: {
+    type: String,
+    default: 'Add Model'
+  },
+  enableDelete: {
+    type: Boolean,
+    default: false
+  },
+  enableEdit: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'add', 'delete-option', 'edit-option'])
 
-// 组件容器引用
 const containerRef = ref(null)
-
-// 控制下拉菜单的显示/隐藏状态
 const isOpen = ref(false)
+const hoveredItemId = ref(null)
 
-// 计算当前选中的选项对象
 const currentOption = computed(() => {
-  // 从选项列表中查找 id 匹配的项
   return props.options.find(opt => opt.id === props.modelValue)
 })
 
-/**
- * 切换下拉菜单的显示状态
- * 点击触发器时调用
- */
 const toggleDropdown = () => {
-  // 切换开关状态
   isOpen.value = !isOpen.value
 }
 
-/**
- * 关闭下拉菜单
- */
 const closeDropdown = () => {
   isOpen.value = false
 }
 
-/**
- * 全局点击事件处理
- * 用于检测点击是否在组件外部
- */
 const handleGlobalClick = (event) => {
-  // 如果菜单未打开，不处理
   if (!isOpen.value) return
-
-  // 使用 composedPath() 获取完整的事件冒泡路径，兼容 Shadow DOM
   const path = event.composedPath()
-  
-  // 如果点击路径中不包含当前组件容器，说明是点击了外部 -> 关闭菜单
   if (containerRef.value && !path.includes(containerRef.value)) {
     closeDropdown()
   }
 }
 
-// 监听 isOpen 状态，动态添加/移除全局点击监听
 watch(isOpen, (val) => {
   if (val) {
-    // 延迟一帧添加监听，避免当前的打开点击事件立即触发关闭
-    setTimeout(() => {
-      window.addEventListener('click', handleGlobalClick)
-    }, 0)
+    window.addEventListener('click', handleGlobalClick)
   } else {
     window.removeEventListener('click', handleGlobalClick)
+    hoveredItemId.value = null
   }
 })
 
-// 组件卸载时清理监听
 onUnmounted(() => {
   window.removeEventListener('click', handleGlobalClick)
 })
 
-/**
- * 选择某个选项
- * @param {Object} option - 选中的选项对象
- */
 const selectOption = (option) => {
-  // 触发 update:modelValue 事件更新父组件数据
   emit('update:modelValue', option.id)
-  // 选择后关闭菜单
   closeDropdown()
+}
+
+const handleAdd = (e) => {
+  e.stopPropagation()
+  closeDropdown()
+  emit('add')
+}
+
+const handleDelete = (e, option) => {
+  e.stopPropagation()
+  emit('delete-option', option)
+}
+
+const handleEdit = (e, option) => {
+  e.stopPropagation()
+  closeDropdown()
+  emit('edit-option', option)
 }
 </script>
 
@@ -125,47 +120,70 @@ const selectOption = (option) => {
     :class="{ 'is-open': isOpen }"
     :style="{ width: width, minWidth: minWidth }"
   >
-    <!-- 移除之前的全屏遮罩层，改用全局事件监听 -->
-    
-    <!-- Trigger 触发器部分 -->
     <div 
       class="select-trigger" 
       :class="{ active: isOpen }"
       @click="toggleDropdown"
     >
       <div class="trigger-content">
-        <!-- 如果有图标则显示 -->
         <span class="select-icon" v-if="currentOption?.icon">
           <component :is="currentOption.icon" size="14" :color="currentOption.color" />
         </span>
-        <!-- 显示当前选中项的标签或占位符 -->
         <span class="select-label">{{ currentOption ? currentOption.label : placeholder }}</span>
       </div>
-      <!-- 下拉箭头，根据状态旋转 -->
       <ChevronDown size="12" class="chevron" :class="{ rotated: isOpen }" />
     </div>
 
-    <!-- Dropdown 下拉菜单部分 -->
     <transition name="fade-slide">
       <div 
         v-if="isOpen" 
         class="select-dropdown"
         :class="[position, `align-${dropdownAlign}`]"
       >
-        <!-- 选项列表 -->
         <div 
           v-for="option in options" 
           :key="option.id"
           class="select-item"
           :class="{ active: modelValue === option.id }"
           @click.stop="selectOption(option)"
+          @mouseenter="hoveredItemId = option.id"
+          @mouseleave="hoveredItemId = null"
         >
-          <!-- 选项图标 -->
           <span class="item-icon" v-if="option.icon">
             <component :is="option.icon" size="14" :color="option.color" />
           </span>
-          <!-- 选项标签 -->
           <span class="item-label">{{ option.label }}</span>
+          <Lock 
+            v-if="option.isPrivate" 
+            size="10" 
+            class="item-private-icon"
+          />
+          <button
+            v-if="enableEdit && option.isPrivate && hoveredItemId === option.id"
+            class="item-edit-btn"
+            @click.stop="handleEdit($event, option)"
+            title="Edit private model"
+          >
+            <Pencil size="10" />
+          </button>
+          <button
+            v-if="enableDelete && option.isPrivate && hoveredItemId === option.id"
+            class="item-delete-btn"
+            @click.stop="handleDelete($event, option)"
+            title="Delete private model"
+          >
+            <X size="10" />
+          </button>
+        </div>
+
+        <div v-if="showAddButton" class="select-divider"></div>
+        <div 
+          v-if="showAddButton"
+          class="select-item select-item-add"
+          @click.stop="handleAdd"
+        >
+          <Plus size="12" class="item-add-icon" />
+          <span class="item-label">{{ addLabel }}</span>
         </div>
       </div>
     </transition>

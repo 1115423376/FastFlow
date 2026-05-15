@@ -1,0 +1,13 @@
+[
+  {
+    "id": 10001,
+    "model_name": "Example Model",
+    "model_id": "gpt-3.5-turbo",
+    "provider": "openai",
+    "api_key": "sk-your-key",
+    "base_url": "https://your-api.example.com",
+    "model_params": {},
+    "enabled": false,
+    "user_id": null
+  }
+]

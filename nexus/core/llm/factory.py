@@ -40,10 +40,14 @@ def _serialize_model_params(model_params: dict[str, Any]) -> str:
     return json.dumps(model_params or {}, ensure_ascii=False, sort_keys=True)
 
 
-def _build_cache_key(model_config_id: int) -> str:
+def _build_cache_key(model_config_id: int, user_id: Optional[int] = None) -> str:
     """
-    缓存键仅按 model_config_id 区分。
+    缓存键包含 user_id 用于私有模型隔离。
+    - 公共模型 (user_id=None): 所有用户共享缓存
+    - 私有模型 (user_id=int): 每个用户独立缓存
     """
+    if user_id:
+        return f"{model_config_id}:{user_id}"
     return str(model_config_id)
 
 
@@ -78,7 +82,18 @@ def _get_runtime(model_config_id: int, auth_token: Optional[str]) -> LLMRuntime:
     """
     获取模型运行时（优先缓存）。
     """
-    cache_key = _build_cache_key(model_config_id)
+    # Extract user_id from auth_token for cache key isolation
+    user_id = None
+    if auth_token:
+        try:
+            from nexus.services.auth_service import extract_user
+            user = extract_user(auth_token)
+            if user:
+                user_id = user.get("uid")
+        except Exception:
+            pass  # Ignore auth errors for cache key
+
+    cache_key = _build_cache_key(model_config_id, user_id)
     cached_runtime = CacheManager.get_llm_runtime(cache_key)
     if cached_runtime is not None:
         logger.debug(

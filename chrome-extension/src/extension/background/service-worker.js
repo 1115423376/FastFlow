@@ -27,19 +27,32 @@ const STREAM_CANCEL_REQUEST_TIMEOUT_MS = 800
 let backgroundInitialized = false
 let cachedServiceBaseUrl = null
 
-function getServiceBaseUrlMap() {
-  if (cachedServiceBaseUrl) return cachedServiceBaseUrl
-
+function getDefaultBaseUrlMap() {
   const releaseChannel = resolveReleaseChannel(resolveRuntimeMode())
   const config = resolveChannelConfig(
     releaseChannel,
     readRuntimeChannelOverrides(releaseChannel)
   )
-
-  cachedServiceBaseUrl = {
+  return {
     api: config.apiBaseUrl,
     nexus: config.nexusBaseUrl
   }
+}
+
+async function getServiceBaseUrlMap() {
+  if (cachedServiceBaseUrl) return cachedServiceBaseUrl
+
+  const defaults = getDefaultBaseUrlMap()
+  try {
+    const stored = await chrome.storage.local.get('fastflow_server_settings')
+    const settings = stored['fastflow_server_settings']
+    if (settings?.serverUrl) {
+      defaults.api = settings.serverUrl
+      defaults.nexus = settings.serverUrl
+    }
+  } catch (_) { /* ignore */ }
+
+  cachedServiceBaseUrl = defaults
   return cachedServiceBaseUrl
 }
 
@@ -48,8 +61,8 @@ function getServiceBaseUrlMap() {
  *
  * 这里强制要求 path 以 `/` 开头，避免后台层出现隐式拼接错误。
  */
-function buildServiceUrl(service, path) {
-  const baseUrl = getServiceBaseUrlMap()[service]
+async function buildServiceUrl(service, path) {
+  const baseUrl = (await getServiceBaseUrlMap())[service]
   if (!baseUrl) {
     throw new Error(`不支持的服务类型: ${service}`)
   }
@@ -158,7 +171,7 @@ async function handleHttpRequest(payload) {
 
   try {
     const response = await fetch(
-      buildServiceUrl(payload.service, payload.path),
+      await buildServiceUrl(payload.service, payload.path),
       createFetchOptions(payload, requestControl.signal)
     )
 
@@ -228,7 +241,7 @@ async function requestStreamCancellation(streamState) {
   const requestControl = createAbortSignal(STREAM_CANCEL_REQUEST_TIMEOUT_MS)
   try {
     const response = await fetch(
-      buildServiceUrl('nexus', '/fastflow/nexus/v1/agent/chat/cancel'),
+      await buildServiceUrl('nexus', '/fastflow/nexus/v1/agent/chat/cancel'),
       createFetchOptions(
         {
           method: 'POST',
@@ -309,7 +322,7 @@ async function handleStream(port, payload, streamState) {
 
   try {
     const response = await fetch(
-      buildServiceUrl(payload.service, payload.path),
+      await buildServiceUrl(payload.service, payload.path),
       createFetchOptions(payload, streamState.controller.signal)
     )
 
@@ -484,7 +497,30 @@ function registerBackgroundListeners() {
   backgroundInitialized = true
   chrome.runtime.onMessage.addListener(handleRuntimeMessage)
   chrome.runtime.onConnect.addListener(handleRuntimeConnect)
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes['fastflow_server_settings']) {
+      cachedServiceBaseUrl = null
+    }
+  })
+}
+
+// MV3: 扩展启动/重载时，向所有已有标签页重新注入 content script
+async function reinitializeExistingTabs() {
+  try {
+    const tabs = await chrome.tabs.query({})
+    for (const tab of tabs) {
+      if (!tab.id || !tab.url) continue
+      if (!tab.url.startsWith('http')) continue
+      try {
+        await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ['content-scripts/content.js']
+        }).catch(() => {})
+      } catch (_) { /* tab may not be injectable */ }
+    }
+  } catch (_) { /* ignore */ }
 }
 
 // MV3 service worker 监听器必须在脚本初始求值阶段同步注册。
 registerBackgroundListeners()
+reinitializeExistingTabs()

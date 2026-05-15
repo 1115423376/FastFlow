@@ -10,7 +10,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PYTHONPATH=/app \
     APP_HOST=0.0.0.0 \
-    APP_PORT=9090 \
+    APP_PORT=8969 \
     TZ=Asia/Shanghai
 
 # =========================

@@ -104,7 +104,7 @@ chrome-extension/.env.development.local
 
 ```bash
 WXT_API_BASE_URL=http://127.0.0.1:8080
-WXT_NEXUS_BASE_URL=http://127.0.0.1:9090
+WXT_NEXUS_BASE_URL=http://127.0.0.1:8969
 ```
 
 说明：
