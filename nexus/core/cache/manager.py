@@ -61,6 +61,15 @@ def _normalize_ai_message(message: AIMessage) -> AIMessage | None:
     content = str(message.content or "")
     if not content.strip():
         return None
+    additional_kwargs = dict(message.additional_kwargs or {})
+    # Preserve reasoning_content for DeepSeek thinking mode compatibility.
+    # DeepSeek API requires reasoning_content from previous assistant messages
+    # to be passed back in subsequent requests when thinking mode is enabled.
+    preserved_kwargs: dict[str, Any] = {}
+    if additional_kwargs.get("reasoning_content"):
+        preserved_kwargs["reasoning_content"] = additional_kwargs["reasoning_content"]
+    if preserved_kwargs:
+        return AIMessage(content=content, additional_kwargs=preserved_kwargs)
     return AIMessage(content=content)
 
 

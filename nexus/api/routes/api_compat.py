@@ -259,6 +259,39 @@ async def check_login(request: Request):
         return _make_response(401, "未登录或登录已过期")
 
 
+@router.post("/auth/refresh")
+async def refresh_token(request: Request):
+    auth_token = request.headers.get("Authorization", "")
+    if auth_token.startswith("Bearer "):
+        auth_token = auth_token[7:]
+
+    try:
+        payload = jwt.decode(auth_token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        uid = payload.get("uid")
+        email = payload.get("email")
+        
+        users = _load_users()
+        for u in users:
+            if u.get("uid") == uid and u.get("email") == email:
+                new_token = _generate_jwt(uid, email)
+                return _make_response(200, "Success", {
+                    "token": new_token,
+                    "userInfo": {
+                        "uid": uid,
+                        "username": u.get("username"),
+                        "email": email,
+                        "status": u.get("status", 1),
+                        "createdAt": u.get("created_at", ""),
+                        "updatedAt": u.get("updated_at", ""),
+                    }
+                })
+        return _make_response(401, "用户不存在")
+    except jwt.ExpiredSignatureError:
+        return _make_response(401, "Token已过期，请重新登录")
+    except Exception:
+        return _make_response(401, "Token无效")
+
+
 # === Model Config endpoints ===
 
 @router.get("/model_config/list")

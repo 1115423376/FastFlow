@@ -2,6 +2,8 @@ import { runtimeConfig } from '@/extension/config/runtime'
 import { AUTHORIZATION_KEY, authService } from '@/shared/services/auth.js'
 import { cache } from '@/shared/utils/cache.js'
 
+const MAX_NETWORK_FAILURES = 3
+
 /**
  * 统一登录态守卫
  * 职责：
@@ -20,6 +22,7 @@ export function createAuthGuard(options = {}) {
   let timer = null
   let unsubscribe = null
   let authed = null
+  let networkFailureCount = 0
 
   // 统一设置登录态，避免重复触发
   function setAuthed(val) {
@@ -32,21 +35,42 @@ export function createAuthGuard(options = {}) {
   async function verify() {
     const token = await cache.get(AUTHORIZATION_KEY)
     if (!token) {
+      networkFailureCount = 0
       setAuthed(false)
       return false
     }
 
     try {
+      // 尝试刷新 Token（如果即将过期）
+      try {
+        if (await authService.shouldRefreshToken()) {
+          await authService.refreshToken()
+        }
+      } catch (refreshError) {
+        console.warn('[FastFlow] Token refresh failed, continuing with checkLogin:', refreshError)
+      }
+
       await authService.checkLogin()
+      networkFailureCount = 0
       setAuthed(true)
       return true
     } catch (e) {
+      // 网络错误：保留当前登录状态，累计失败次数
+      if (e.isNetworkError || e.status === 0) {
+        networkFailureCount++
+        if (networkFailureCount < MAX_NETWORK_FAILURES) {
+          return authed
+        }
+      }
+      // 认证失败或网络失败次数过多：清除登录状态
+      networkFailureCount = 0
       setAuthed(false)
       return false
     }
   }
 
   function handleAuthExpired() {
+    networkFailureCount = 0
     setAuthed(false)
   }
 
@@ -66,6 +90,7 @@ export function createAuthGuard(options = {}) {
         if (!authChange) return
 
         if (!authChange.newValue) {
+          networkFailureCount = 0
           setAuthed(false)
           return
         }

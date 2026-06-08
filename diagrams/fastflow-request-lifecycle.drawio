@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="OpenCode" modified="2026-05-19T12:00:00.000Z">
+  <diagram id="fastflow_lifecycle" name="FastFlow Request Lifecycle">
+    <mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1050" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ===== TITLE ===== -->
+        <mxCell id="2" value="&lt;b&gt;FastFlow Request Lifecycle &amp;amp; Integration Architecture&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;font-weight:normal;&quot;&gt;FastFlow 请求生命周期与集成架构&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="350" y="5" width="700" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LEFT SIDE: CHROME EXTENSION -->
+        <!-- ================================================================ -->
+        <mxCell id="10" value="&lt;b&gt;Chrome Extension (Chrome 浏览器扩展)&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-weight:normal;&quot;&gt;Runs inside browser sandbox · 浏览器沙箱中运行&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontSize=12;verticalAlign=top;align=left;spacingTop=-2;container=1;collapsible=0;spacingLeft=8;spacingRight=8;spacingBottom=8;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="30" y="35" width="330" height="510" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="11" value="&lt;b&gt;Popup App (Vue)&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;Extension popup · Settings · Auth&lt;br&gt;扩展弹出窗口 / 设置 / 认证&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;fontColor=#FFFFFF;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="65" width="290" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="12" value="&lt;b&gt;Chatbox App (Vue)&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;Injected chat widget · Shadow DOM isolation&lt;br&gt;聊天组件 / Shadow DOM 隔离&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;fontColor=#FFFFFF;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="135" width="290" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="13" value="&lt;b&gt;Content Script&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;Runs in isolated page context · Mounts Chatbox&lt;br&gt;隔离页面上下文 / 挂载聊天组件&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E88E5;fontColor=#FFFFFF;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="205" width="290" height="45" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="14" value="&lt;b&gt;Inject Script&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;Real page context · Workflow graph export&lt;br&gt;页面真实上下文 / 工作流图导出&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E88E5;fontColor=#FFFFFF;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="270" width="290" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- Background Service Worker — highlighted with gold border -->
+        <mxCell id="15" value="&lt;b&gt;⭐ Background Service Worker&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;🔑 Only component allowed HTTP requests&lt;br&gt;唯一允许 HTTP 请求的组件&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0D47A1;fontColor=#FFFFFF;fontSize=12;verticalAlign=middle;arcSize=8;strokeColor=#FF6F00;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="335" width="290" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="16" value="&lt;b&gt;Backend Client (axios)&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;HTTP client inside extension&lt;br&gt;扩展内部的 HTTP 客户端&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#42A5F5;fontColor=#FFFFFF;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="408" width="290" height="45" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="17" value="&lt;b&gt;📡 Protocol Constants (通信协议)&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;chrome.runtime.sendMessage() — extension internal&lt;br&gt;window.postMessage() — cross-context&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90CAF9;fontColor=#1A237E;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="473" width="290" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- RIGHT SIDE: NEXUS SERVER -->
+        <!-- ================================================================ -->
+        <mxCell id="30" value="&lt;b&gt;Nexus Server (Nexus 后端服务)&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-weight:normal;&quot;&gt;FastAPI framework · Port 8969 · 端口&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=12;verticalAlign=top;align=left;spacingTop=-2;container=1;collapsible=0;spacingLeft=8;spacingRight=8;spacingBottom=8;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="860" y="35" width="510" height="510" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="31" value="&lt;b&gt;/fastflow/nexus/v1/*&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;Agent API · Health Check · Slash Commands&lt;br&gt;智能体 / 健康检查 / 斜杠命令&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2E7D32;fontColor=#FFFFFF;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="880" y="65" width="470" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="32" value="&lt;b&gt;/fastflow/api/v1/*&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;Auth API · Model CRUD&lt;br&gt;认证 / 模型管理&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#388E3C;fontColor=#FFFFFF;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="880" y="135" width="470" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="33" value="&lt;b&gt;SSE Streaming Stack (流式响应栈)&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;EventSourceResponse → safe_stream → SSE raw data&lt;br&gt;🔵 Server-Sent Events · Ping every 10s&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00695C;fontColor=#FFFFFF;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="880" y="205" width="470" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="34" value="&lt;b&gt;Transport &amp;amp; Protocol (传输与协议)&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;HTTP / SSE over TCP&lt;br&gt;JSON events: &lt;i&gt;{&amp;quot;type&amp;quot;: &amp;quot;answer.delta&amp;quot;, &amp;quot;content&amp;quot;: &amp;quot;...&amp;quot;}&lt;/i&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0077C2;fontColor=#FFFFFF;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="880" y="275" width="470" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="35" value="&lt;b&gt;Session &amp;amp; Auth (会话与认证)&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;session_id per conversation&lt;br&gt;JWT Bearer Token · Authorization header&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B71C1C;fontColor=#FFFFFF;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="880" y="345" width="470" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="36" value="&lt;b&gt;CORS Configuration (跨域配置)&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;Allow all origins (*) for Chrome extension&lt;br&gt;允许所有来源 / Chrome 扩展访问&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E65100;fontColor=#FFFFFF;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="880" y="415" width="470" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="37" value="&lt;b&gt;Architecture Overview (架构概述)&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;FastAPI async · Uvicorn ASGI · SQLAlchemy ORM&lt;br&gt;异步框架 / ASGI 服务器 / 对象关系映射&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#33691E;fontColor=#FFFFFF;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="880" y="485" width="470" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- BOTTOM: INTEGRATION CONFIGURATION -->
+        <!-- ================================================================ -->
+        <mxCell id="50" value="&lt;b&gt;Integration Configuration (集成配置)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#78909C;strokeWidth=2;fontSize=12;verticalAlign=top;align=left;spacingTop=-2;container=1;collapsible=0;spacingLeft=8;spacingRight=8;spacingBottom=8;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="30" y="570" width="1340" height="85" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="51" value="&lt;b&gt;WXT Config&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;wxt.config.ts → manifest.json&lt;br&gt;扩展构建配置&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#78909C;fontColor=#FFFFFF;fontSize=10;verticalAlign=middle;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="583" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="52" value="&lt;b&gt;Channel Config&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;channels.ts&lt;br&gt;development / production URLs&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#78909C;fontColor=#FFFFFF;fontSize=10;verticalAlign=middle;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="268" y="583" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="53" value="&lt;b&gt;Extension Keys&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;keys.ts&lt;br&gt;Fixed extension IDs&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#78909C;fontColor=#FFFFFF;fontSize=10;verticalAlign=middle;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="486" y="583" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="54" value="&lt;b&gt;CORS Policy&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;Allow all origins (*)&lt;br&gt;允许所有来源域&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#78909C;fontColor=#FFFFFF;fontSize=10;verticalAlign=middle;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="704" y="583" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="55" value="&lt;b&gt;JWT Auth&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;Bearer token&lt;br&gt;Authorization header&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#78909C;fontColor=#FFFFFF;fontSize=10;verticalAlign=middle;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="922" y="583" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="56" value="&lt;b&gt;SSE Keepalive&lt;/b&gt;&lt;hr&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;Ping every 10 seconds&lt;br&gt;10秒心跳保活&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#78909C;fontColor=#FFFFFF;fontSize=10;verticalAlign=middle;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="583" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- LEGEND -->
+        <!-- ================================================================ -->
+        <mxCell id="60" value="&lt;b&gt;Color Legend (颜色图例)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#BDBDBD;strokeWidth=1;fontSize=11;verticalAlign=top;align=left;spacingTop=-2;container=1;collapsible=0;spacingLeft=6;spacingRight=6;spacingBottom=6;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="30" y="680" width="1340" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="61" value="&lt;font color=&quot;#1565C0&quot;&gt;█&lt;/font&gt; &lt;b&gt;Extension Components&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;浏览器扩展组件&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="55" y="695" width="150" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="62" value="&lt;font color=&quot;#2E7D32&quot;&gt;█&lt;/font&gt; &lt;b&gt;Nexus / Backend&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;后端服务&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="695" width="150" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="63" value="&lt;font color=&quot;#FF6F00&quot;&gt;━&lt;/font&gt; &lt;b&gt;Communication&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;通信通道 (orange arrows)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="465" y="695" width="180" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="64" value="&lt;font color=&quot;#78909C&quot;&gt;█&lt;/font&gt; &lt;b&gt;Configuration&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;配置信息&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="700" y="695" width="150" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="65" value="&lt;font color=&quot;#B71C1C&quot;&gt;█&lt;/font&gt; &lt;b&gt;Security / Auth&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;安全认证&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="905" y="695" width="150" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="66" value="&lt;font color=&quot;#00695C&quot;&gt;┅┅&lt;/font&gt; &lt;b&gt;SSE Streaming&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;流式响应 (dashed green)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="695" width="180" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- EDGES: INTERNAL EXTENSION COMMUNICATION -->
+        <!-- ================================================================ -->
+
+        <!-- e101: Popup → BSW -->
+        <mxCell id="101" value="&lt;b&gt;chrome.runtime.sendMessage()&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FF6F00;strokeWidth=2;fontSize=10;fontColor=#FF6F00;align=center;verticalAlign=middle;" edge="1" parent="1" source="11" target="15">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="90"/>
+              <mxPoint x="380" y="362"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e102: Chatbox → BSW -->
+        <mxCell id="102" value="&lt;b&gt;chrome.runtime.sendMessage()&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FF6F00;strokeWidth=2;fontSize=10;fontColor=#FF6F00;align=center;verticalAlign=middle;" edge="1" parent="1" source="12" target="15">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="160"/>
+              <mxPoint x="380" y="362"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e103: Inject Script → Content Script (postMessage) -->
+        <mxCell id="103" value="&lt;b&gt;window.postMessage()&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FF6F00;strokeWidth=2;fontSize=10;fontColor=#FF6F00;align=center;verticalAlign=middle;" edge="1" parent="1" source="14" target="13">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="292"/>
+              <mxPoint x="360" y="227"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e104: Content Script → BSW -->
+        <mxCell id="104" value="&lt;b&gt;chrome.runtime.sendMessage()&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FF6F00;strokeWidth=2;fontSize=10;fontColor=#FF6F00;align=center;verticalAlign=middle;" edge="1" parent="1" source="13" target="15">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="227"/>
+              <mxPoint x="390" y="362"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e107: BSW → Chatbox (SSE relay, dashed return, left side) -->
+        <mxCell id="107" value="&lt;b&gt;SSE relay (中继)&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;chrome.runtime.sendMessage()&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FF6F00;strokeWidth=2;strokeDashPattern=4 3;fontSize=9;fontColor=#FF6F00;align=center;verticalAlign=middle;" edge="1" parent="1" source="15" target="12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="10" y="362"/>
+              <mxPoint x="10" y="160"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e108: BSW → Popup (SSE relay, dashed return, left side) -->
+        <mxCell id="108" value="&lt;b&gt;SSE relay (中继)&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;&quot;&gt;chrome.runtime.sendMessage()&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FF6F00;strokeWidth=2;strokeDashPattern=4 3;fontSize=9;fontColor=#FF6F00;align=center;verticalAlign=middle;" edge="1" parent="1" source="15" target="11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="10" y="350"/>
+              <mxPoint x="10" y="90"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- EDGES: EXTENSION → NEXUS COMMUNICATION -->
+        <!-- ================================================================ -->
+
+        <!-- e105: BSW → Nexus (HTTP fetch/axios) — main cross arrow -->
+        <mxCell id="105" value="&lt;b&gt;HTTP fetch / axios&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;Port 8969 · JWT Bearer Auth&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.2;entryDx=0;entryDy=0;strokeColor=#FF6F00;strokeWidth=3;fontSize=11;fontColor=#FF6F00;align=center;verticalAlign=middle;" edge="1" parent="1" source="15" target="30">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="780" y="362"/>
+              <mxPoint x="780" y="137"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e106: SSE Stream → BSW (SSE events from Nexus, dashed green) -->
+        <mxCell id="106" value="&lt;b&gt;SSE events stream&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;&quot;&gt;EventSourceResponse / 流式推送&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;strokeColor=#00695C;strokeWidth=2;strokeDashPattern=6 3;fontSize=10;fontColor=#00695C;align=center;verticalAlign=middle;" edge="1" parent="1" source="33" target="15">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="232"/>
+              <mxPoint x="700" y="350"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- e109: Web Page → Inject Script (workflow graph data) -->
+        <mxCell id="109" value="&lt;font style=&quot;font-size:9px;&quot;&gt;Workflow graph data&lt;br&gt;工作流图数据&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#78909C;strokeWidth=1;fontSize=9;fontColor=#78909C;align=center;verticalAlign=middle;" edge="1" parent="1" target="14">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="195" y="315" as="sourcePoint"/>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

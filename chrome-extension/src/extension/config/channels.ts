@@ -16,7 +16,7 @@ export interface ChannelOverrides {
   nexusBaseUrl?: string
 }
 
-const AUTH_CHECK_INTERVAL_MS = 60 * 1000
+const AUTH_CHECK_INTERVAL_MS = 5 * 60 * 1000 // 5 minutes
 const ELEMENT_SELECTORS = [
   '.vue-flow-wrapper',
   '.react-flow',
@@ -35,8 +35,8 @@ const CHANNELS: Record<ReleaseChannel, Omit<ChannelConfig, 'hostPermissions'>> =
     extensionPublicKey: DEV_EXTENSION_PUBLIC_KEY
   },
   production: {
-    apiBaseUrl: 'http://11.120.80.177:8080',
-    nexusBaseUrl: 'http://11.120.80.177:8969',
+    apiBaseUrl: 'http://your-server:8969',
+    nexusBaseUrl: 'http://your-server:8969',
     authCheckIntervalMs: AUTH_CHECK_INTERVAL_MS,
     elementSelectors: ELEMENT_SELECTORS,
     extensionPublicKey: PROD_EXTENSION_PUBLIC_KEY

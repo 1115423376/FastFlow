@@ -3,6 +3,8 @@ import { createParser } from 'eventsource-parser'
 import { readRuntimeChannelOverrides, resolveRuntimeMode } from '@/extension/config/env'
 import { resolveChannelConfig, resolveReleaseChannel } from '@/extension/config/channels'
 import {
+  FASTFLOW_BACKGROUND_PING,
+  FASTFLOW_BACKGROUND_PONG,
   FASTFLOW_HTTP_REQUEST,
   FASTFLOW_HTTP_RESPONSE,
   FASTFLOW_STREAM_CANCEL,
@@ -26,6 +28,9 @@ const DEFAULT_HTTP_TIMEOUT_MS = 30 * 1000
 const STREAM_CANCEL_REQUEST_TIMEOUT_MS = 800
 let backgroundInitialized = false
 let cachedServiceBaseUrl = null
+
+const KEEPALIVE_ALARM_NAME = 'fastflow-keepalive'
+const KEEPALIVE_PERIOD_MINUTES = 1 / 3 // 20 seconds
 
 function getDefaultBaseUrlMap() {
   const releaseChannel = resolveReleaseChannel(resolveRuntimeMode())
@@ -397,6 +402,11 @@ async function handleStream(port, payload, streamState) {
 function handleRuntimeMessage(message, _sender, sendResponse) {
   if (!message) return false
 
+  if (message.type === FASTFLOW_BACKGROUND_PING) {
+    sendResponse({ type: FASTFLOW_BACKGROUND_PONG })
+    return false
+  }
+
   if (message.type !== FASTFLOW_HTTP_REQUEST) return false
 
   handleHttpRequest(message.payload)
@@ -492,6 +502,19 @@ function handleRuntimeConnect(port) {
   })
 }
 
+async function createKeepAliveAlarm() {
+  try {
+    const existing = await chrome.alarms.get(KEEPALIVE_ALARM_NAME)
+    if (!existing) {
+      await chrome.alarms.create(KEEPALIVE_ALARM_NAME, {
+        periodInMinutes: KEEPALIVE_PERIOD_MINUTES
+      })
+    }
+  } catch (_) {
+    // Silently ignore if alarms API is unavailable
+  }
+}
+
 function registerBackgroundListeners() {
   if (backgroundInitialized) return
   backgroundInitialized = true
@@ -500,6 +523,12 @@ function registerBackgroundListeners() {
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'local' && changes['fastflow_server_settings']) {
       cachedServiceBaseUrl = null
+    }
+  })
+
+  chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === KEEPALIVE_ALARM_NAME) {
+      // No-op: just handling the alarm keeps the SW alive
     }
   })
 }
@@ -523,4 +552,9 @@ async function reinitializeExistingTabs() {
 
 // MV3 service worker 监听器必须在脚本初始求值阶段同步注册。
 registerBackgroundListeners()
-reinitializeExistingTabs()
+createKeepAliveAlarm()
+
+// Fire-and-forget with a tiny delay to let SW stabilize first
+setTimeout(() => {
+  reinitializeExistingTabs()
+}, 100)

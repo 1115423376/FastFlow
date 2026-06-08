@@ -4,6 +4,7 @@ import { authService } from '@/shared/services/auth.js'
 import NeonButton from '@/shared/components/NeonButton.vue'
 import { onMounted, ref, watch } from 'vue'
 import { getEmailError, getPasswordError } from '@/shared/utils/validators.js'
+import { pingBackground } from '@/extension/runtime/backend-client.js'
 
 const emit = defineEmits(['navigate', 'login-success'])
 
@@ -19,6 +20,8 @@ const errors = ref({
 
 const isLoading = ref(false)
 const rememberAccount = ref(false)
+const isBackgroundReady = ref(false)
+const checkingBackground = ref(true)
 
 const LOGIN_FORM_CACHE_KEY = 'login_form_cache'
 const REMEMBER_ACCOUNT_KEY = 'remembered_account'
@@ -53,6 +56,7 @@ onMounted(async () => {
       form.value.password = cachedForm.password || ''
     }
   }
+  checkBackgroundReadiness()
 })
 
 function clearError(field) {
@@ -137,6 +141,21 @@ async function handleLogin() {
 function goToRegister() {
   emit('navigate', 'register')
 }
+
+async function checkBackgroundReadiness() {
+  checkingBackground.value = true
+  for (let i = 0; i < 5; i++) {
+    const ready = await pingBackground()
+    if (ready) {
+      isBackgroundReady.value = true
+      checkingBackground.value = false
+      return
+    }
+    await new Promise(r => setTimeout(r, 200))
+  }
+  isBackgroundReady.value = false
+  checkingBackground.value = false
+}
 </script>
 
 <template>
@@ -177,8 +196,15 @@ function goToRegister() {
 
       <div class="global-error" v-if="globalError">{{ globalError }}</div>
 
-      <NeonButton type="submit" full-width :disabled="isLoading">
-        {{ isLoading ? '登录中...' : '登录' }}
+      <div v-if="checkingBackground" class="background-status">
+        正在连接扩展后台服务...
+      </div>
+      <div v-else-if="!isBackgroundReady" class="background-status background-error">
+        扩展后台未就绪，请在 chrome://extensions 中重新加载扩展
+      </div>
+
+      <NeonButton type="submit" full-width :disabled="isLoading || !isBackgroundReady">
+        {{ !isBackgroundReady ? '正在连接扩展后台...' : isLoading ? '登录中...' : '登录' }}
       </NeonButton>
     </form>
 
@@ -283,6 +309,23 @@ function goToRegister() {
   padding: 8px;
   border-radius: 4px;
   border: 1px solid rgba(255, 59, 48, 0.2);
+}
+
+.background-status {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  text-align: center;
+  padding: 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--bg-surface) 88%, transparent);
+  border: 1px solid var(--border-subtle);
+}
+
+.background-status.background-error {
+  color: var(--danger);
+  background: rgba(255, 59, 48, 0.1);
+  border-color: rgba(255, 59, 48, 0.2);
 }
 
 .auth-footer {

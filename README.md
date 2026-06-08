@@ -89,14 +89,13 @@ flowchart LR
 |----------|--------------|------------------|------|
 | OpenAI | `https://api.openai.com/v1` | openai | — |
 | Anthropic | `https://api.anthropic.com` | anthropic | — |
-| DeepSeek | `https://api.deepseek.com/v1` | deepseek | 需 `/v1` 后缀 |
+| DeepSeek | `https://api.deepseek.com` | deepseek | - |
 | MiniMax | `https://api.minimaxi.com/v1` | openai | OpenAI 兼容模式 |
 | Qwen (通义千问) | `https://dashscope.aliyuncs.com/compatible-mode/v1` | — | — |
 | GLM (智谱) | `https://open.bigmodel.cn/api/paas/v4` | — | — |
 | Moonshot | `https://api.moonshot.cn/v1` | — | — |
 | Other | 自定义 | — | 手动输入 URL |
 
-> 提示：DeepSeek 的 base_url 必须以 `/v1` 结尾，否则会返回 "Authentication Fails (governor)"。
 
 ## 快速开始
 
@@ -109,15 +108,29 @@ flowchart LR
 
 ### 1. 启动 Nexus 服务
 
+**一键启动（推荐）：**
+
+```bash
+./start-nexus.sh
+```
+
+脚本自动完成：Python 版本检查 → 虚拟环境创建 → 依赖安装 → PYTHONPATH 设置 → 启动服务。
+
+**常用命令：**
+
+| 命令 | 说明 |
+|------|------|
+| `./start-nexus.sh` | 前台启动（默认，Ctrl+C 停止） |
+| `./start-nexus.sh --daemon` | 后台启动 |
+| `./start-nexus.sh --stop` | 停止后台服务 |
+| `./start-nexus.sh --restart` | 重启后台服务 |
+| `./start-nexus.sh --help` | 查看帮助 |
+
+**从 nexus 目录运行：**
+
 ```bash
 cd nexus
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-# 从仓库根目录启动（确保 PYTHONPATH 正确）
-cd /home/tdq/fastflow
-PYTHONPATH=/home/tdq/fastflow python -m nexus.main
+./start.sh
 ```
 
 默认监听：`http://0.0.0.0:8969`
@@ -127,6 +140,20 @@ PYTHONPATH=/home/tdq/fastflow python -m nexus.main
 curl http://localhost:8969/fastflow/nexus/v1/health
 # {"code":200,"data":{"status":"Online","service":"FastFlow-Nexus","version":"1.1.0"}}
 ```
+
+<details>
+<summary>手动启动（不用脚本）</summary>
+
+```bash
+cd nexus
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cd /home/tdq/fastflow
+PYTHONPATH=/home/tdq/fastflow python -m nexus.main
+```
+
+</details>
 
 ### 2. 构建 Chrome 扩展
 
@@ -217,7 +244,7 @@ PYTHONPATH=/home/tdq/fastflow python3 nexus/scripts/generate_invite_codes.py --c
 | `provider` | LiteLLM provider 名称 |
 | `api_key` | API 密钥 |
 | `base_url` | API 地址 |
-| `model_params` | 额外模型参数（如 `{"enable_thinking": true}`） |
+| `model_params` | 额外模型参数。DeepSeek 模型如需启用思考模式，设置 `"enable_thinking": true`（注意：启用后多轮对话中会自动保留推理上下文） |
 | `enabled` | 是否启用 |
 | `user_id` | `null` = 公共模型，数字 = 私有模型归属用户 |
 
@@ -336,7 +363,7 @@ fastflow/
 │   ├── api/                   # 路由层 + API 兼容
 │   ├── common/                # 通用异常
 │   ├── config/                # 配置 + 模型/用户 JSON
-│   ├── core/                  # LLM / Cache / Event / Tools / Skills
+│   ├── core/                  # LLM / Cache / Event / Tools / Skills / Reasoning Patch
 │   ├── services/              # 业务编排层
 │   ├── skills/                # 本地技能
 │   ├── main.py                # 应用入口
@@ -356,6 +383,17 @@ fastflow/
 ### DeepSeek 报 "Authentication Fails (governor)"
 
 Base URL 必须以 `/v1` 结尾。正确：`https://api.deepseek.com/v1`。
+
+### DeepSeek thinking 模式报 "reasoning_content must be passed back to the API"
+
+当模型配置中启用 `enable_thinking` 后，DeepSeek API 要求多轮对话中的 assistant 消息必须携带上一轮的 `reasoning_content`。Nexus 内部已做两层保障：
+
+1. **会话历史保留**：`cache/manager.py` 和 `run_loop.py` 在存储/加载历史消息时会保留 `additional_kwargs` 中的 `reasoning_content`
+2. **API 序列化注入**：`core/llm/reasoning_patch.py` monkey-patch 了 `langchain_litellm` 的消息转换函数，确保 `reasoning_content` 被提升为 API 请求中的顶层字段
+
+若仍遇到此错误，请：
+- 确认 Nexus 版本包含上述修复（`reasoning_patch.py` 存在）
+- 清除会话缓存后重试（重启 Nexus 即可）
 
 ### 模型配置修改后不生效
 

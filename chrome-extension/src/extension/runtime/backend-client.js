@@ -1,4 +1,6 @@
 import {
+  FASTFLOW_BACKGROUND_PING,
+  FASTFLOW_BACKGROUND_PONG,
   FASTFLOW_HTTP_REQUEST,
   FASTFLOW_HTTP_RESPONSE,
   FASTFLOW_STREAM_CANCEL,
@@ -10,7 +12,8 @@ import {
   FASTFLOW_STREAM_PORT
 } from './backend-protocol.js'
 
-const BACKGROUND_RETRY_DELAY_MS = 150
+const BACKGROUND_RETRY_DELAYS_MS = [100, 200, 400]
+const MAX_BACKGROUND_RETRIES = 3
 const BACKGROUND_UNAVAILABLE_MESSAGE =
   '扩展后台 service worker 未就绪，请在 chrome://extensions 中重新加载 FastFlow 扩展后重试'
 const STREAM_DISCONNECTED_MESSAGE = '流式连接中断，请重试'
@@ -71,7 +74,7 @@ function wait(ms) {
 }
 
 async function sendRuntimeMessage(message, { retryOnMissingReceiver = false } = {}) {
-  let retried = false
+  let retryCount = 0
 
   while (true) {
     try {
@@ -85,9 +88,14 @@ async function sendRuntimeMessage(message, { retryOnMissingReceiver = false } = 
         })
       })
     } catch (error) {
-      if (retryOnMissingReceiver && !retried && isMissingReceiverError(error)) {
-        retried = true
-        await wait(BACKGROUND_RETRY_DELAY_MS)
+      if (
+        retryOnMissingReceiver &&
+        retryCount < MAX_BACKGROUND_RETRIES &&
+        isMissingReceiverError(error)
+      ) {
+        const delay = BACKGROUND_RETRY_DELAYS_MS[retryCount]
+        retryCount++
+        await wait(delay)
         continue
       }
       if (isMissingReceiverError(error)) {
@@ -95,6 +103,26 @@ async function sendRuntimeMessage(message, { retryOnMissingReceiver = false } = 
       }
       throw error
     }
+  }
+}
+
+/**
+ * 向后台 service worker 发送 PING 健康检查。
+ *
+ * 使用与 sendRuntimeMessage 相同的重试策略，在 service worker 冷启动期间自动重试。
+ * 与 sendRuntimeMessage 不同，本函数永远不会 throw — 所有错误均转化为 false 返回值。
+ *
+ * @returns {Promise<boolean>} PONG 响应到达返回 true，否则返回 false
+ */
+export async function pingBackground() {
+  try {
+    const response = await sendRuntimeMessage(
+      { type: FASTFLOW_BACKGROUND_PING },
+      { retryOnMissingReceiver: true }
+    )
+    return response?.type === FASTFLOW_BACKGROUND_PONG
+  } catch {
+    return false
   }
 }
 

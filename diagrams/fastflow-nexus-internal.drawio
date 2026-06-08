@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="Electron" modified="2025-05-19T10:00:00.000Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.5 Chrome/128.0.6613.36 Electron/32.0.1 Safari/537.36" version="24.7.5" etag="fastflow-nexus-internal-v1" type="device">
+  <diagram id="fastflow-nexus-internal" name="Page-1">
+    <mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1220" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LAYER 1: API Layer                                               -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="2" value="&lt;b&gt;API Layer&lt;/b&gt;&lt;br&gt;API 接入层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontStyle=1;fontSize=14;arcSize=10;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="40" width="1340" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="3" value="&lt;b&gt;CORS Middleware&lt;/b&gt;&lt;br&gt;CORS 中间件" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="50" y="55" width="200" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="4" value="&lt;b&gt;Route Router (/fastflow/nexus/v1)&lt;/b&gt;&lt;br&gt;路由分发器 (/fastflow/nexus/v1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="270" y="55" width="240" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="5" value="&lt;b&gt;Agent Endpoint&lt;/b&gt;&lt;br&gt;Agent 端点" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="530" y="55" width="250" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="6" value="&lt;b&gt;Slash Endpoint&lt;/b&gt;&lt;br&gt;Slash 端点" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="800" y="55" width="200" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="7" value="&lt;b&gt;API Compat Router&lt;/b&gt;&lt;br&gt;API 兼容路由" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="270" y="120" width="240" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="8" value="&lt;b&gt;SSE Streaming&lt;/b&gt;&lt;br&gt;SSE 流式推送" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="530" y="120" width="250" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LAYER 2: Service Layer                                            -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="9" value="&lt;b&gt;Service Layer&lt;/b&gt;&lt;br&gt;服务层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontStyle=1;fontSize=14;arcSize=10;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="270" width="1340" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="10" value="&lt;b&gt;AgentService&lt;/b&gt;&lt;br&gt;Agent 服务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#82b366;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="100" y="325" width="320" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="11" value="&lt;b&gt;AuthService&lt;/b&gt;&lt;br&gt;认证服务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#82b366;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="540" y="325" width="320" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="12" value="&lt;b&gt;ModelConfigService&lt;/b&gt;&lt;br&gt;模型配置服务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#82b366;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="980" y="325" width="320" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LAYER 3: Agent Layer                                              -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="13" value="&lt;b&gt;Agent Layer&lt;/b&gt;&lt;br&gt;Agent 代理层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;fontStyle=1;fontSize=14;arcSize=10;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="430" width="1340" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="14" value="&lt;b&gt;ChatAgent&lt;/b&gt;&lt;br&gt;对话代理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#d79b00;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="370" y="480" width="660" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LAYER 4: Core Runtime                                             -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="15" value="&lt;b&gt;Core Runtime&lt;/b&gt;&lt;br&gt;核心运行时" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;verticalAlign=top;fontStyle=1;fontSize=14;arcSize=10;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="560" width="1340" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- Row 1 -->
+        <mxCell id="16" value="&lt;b&gt;run_loop.py&lt;/b&gt;&lt;br&gt;运行循环" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#b85450;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="50" y="615" width="230" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="17" value="&lt;b&gt;turn_stream.py&lt;/b&gt;&lt;br&gt;轮次流处理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#b85450;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="310" y="615" width="200" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="18" value="&lt;b&gt;ToolExecutor&lt;/b&gt;&lt;br&gt;工具执行器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#b85450;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="540" y="615" width="220" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="19" value="&lt;b&gt;ToolCatalog&lt;/b&gt;&lt;br&gt;工具目录" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#b85450;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="790" y="615" width="200" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="&lt;b&gt;Planner&lt;/b&gt;&lt;br&gt;规划器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#b85450;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1020" y="615" width="200" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- Row 2 -->
+        <mxCell id="21" value="&lt;b&gt;PhaseTracker&lt;/b&gt;&lt;br&gt;阶段追踪器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#b85450;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="190" y="690" width="500" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="22" value="&lt;b&gt;ToolExecutionTracker&lt;/b&gt;&lt;br&gt;工具执行追踪器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#b85450;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="720" y="690" width="500" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LAYER 5: LLM Layer                                                -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="23" value="&lt;b&gt;LLM Layer&lt;/b&gt;&lt;br&gt;LLM 模型层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontStyle=1;fontSize=14;arcSize=10;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="850" width="1340" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="24" value="&lt;b&gt;LLM Factory&lt;/b&gt;&lt;br&gt;LLM 工厂" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9673a6;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="60" y="905" width="300" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="25" value="&lt;b&gt;LiteLLMAdapter&lt;/b&gt;&lt;br&gt;LiteLLM 适配器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9673a6;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="380" y="905" width="300" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="26" value="&lt;b&gt;Reasoning Patch&lt;/b&gt;&lt;br&gt;推理补丁" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9673a6;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="700" y="905" width="300" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="27" value="&lt;b&gt;Response Normalizer&lt;/b&gt;&lt;br&gt;响应标准化器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9673a6;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1020" y="905" width="300" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LAYER 6: Infrastructure                                           -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="28" value="&lt;b&gt;Infrastructure&lt;/b&gt;&lt;br&gt;基础设施" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=14;arcSize=10;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="1010" width="1340" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="29" value="&lt;b&gt;Cache (LRU)&lt;/b&gt;&lt;br&gt;缓存 (LRU)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#666666;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="60" y="1065" width="240" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="30" value="&lt;b&gt;Skills&lt;/b&gt;&lt;br&gt;技能系统" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#666666;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="315" y="1065" width="220" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="31" value="&lt;b&gt;History&lt;/b&gt;&lt;br&gt;历史记录" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#666666;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="550" y="1065" width="200" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="32" value="&lt;b&gt;Tools&lt;/b&gt;&lt;br&gt;工具系统" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#666666;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="765" y="1065" width="220" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="33" value="&lt;b&gt;Config (JSON)&lt;/b&gt;&lt;br&gt;配置 (JSON)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#666666;fontSize=11;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1000" y="1065" width="250" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- VERTICAL ARROWS (layer-to-layer on left side)                     -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666;strokeWidth=2;endArrow=blockThin;exitX=0;exitY=1;exitDx=-15;exitDy=0;entryX=0;entryY=0;entryDx=-15;entryDy=0;" parent="1" source="2" target="9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666;strokeWidth=2;endArrow=blockThin;exitX=0;exitY=1;exitDx=-15;exitDy=0;entryX=0;entryY=0;entryDx=-15;entryDy=0;" parent="1" source="9" target="13" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666;strokeWidth=2;endArrow=blockThin;exitX=0;exitY=1;exitDx=-15;exitDy=0;entryX=0;entryY=0;entryDx=-15;entryDy=0;" parent="1" source="13" target="15" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666;strokeWidth=2;endArrow=blockThin;exitX=0;exitY=1;exitDx=-15;exitDy=0;entryX=0;entryY=0;entryDx=-15;entryDy=0;" parent="1" source="15" target="23" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666;strokeWidth=2;endArrow=blockThin;exitX=0;exitY=1;exitDx=-15;exitDy=0;entryX=0;entryY=0;entryDx=-15;entryDy=0;" parent="1" source="23" target="28" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- COMPONENT ARROWS (cross-layer data flow)                          -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666;strokeWidth=2;endArrow=blockThin;" parent="1" source="5" target="10" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666;strokeWidth=2;endArrow=blockThin;" parent="1" source="10" target="14" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666;strokeWidth=2;endArrow=blockThin;" parent="1" source="14" target="16" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

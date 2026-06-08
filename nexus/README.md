@@ -32,6 +32,16 @@
 
 默认端口：`8969`
 
+## Quick Start
+
+```bash
+./start.sh              # foreground (Ctrl+C to stop)
+./start.sh --daemon     # background mode
+./start.sh --stop       # stop daemon
+```
+
+See `./start.sh --help` for all options.
+
 ## 快速开始
 
 ### 1. 环境要求

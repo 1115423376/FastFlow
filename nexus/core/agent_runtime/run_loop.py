@@ -340,10 +340,16 @@ async def run_agent(runtime_config: AgentRuntimeConfig) -> AsyncGenerator[dict[s
     _raise_if_cancelled(cancellation_context)
     user_prompt = str(runtime_config.context.user_prompt or "").strip()
     if user_prompt and final_answer:
+        # Preserve reasoning_content from turn_result for DeepSeek thinking mode.
+        # DeepSeek requires reasoning_content from previous assistant messages
+        # to be passed back in subsequent API requests when thinking mode is enabled.
+        ai_additional_kwargs: dict[str, Any] = {}
+        if reasoning_content:
+            ai_additional_kwargs["reasoning_content"] = reasoning_content
         runtime_state.history.add_messages(
             [
                 HumanMessage(content=user_prompt),
-                AIMessage(content=final_answer),
+                AIMessage(content=final_answer, additional_kwargs=ai_additional_kwargs),
             ]
         )
 

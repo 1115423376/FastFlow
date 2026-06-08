@@ -12,6 +12,7 @@ const EXTENSION_ICONS = {
 
 const BASE_PERMISSIONS = [
   'activeTab',
+  'alarms',
   'tabs',
   'scripting',
   'storage',

@@ -153,8 +153,7 @@ onUnmounted(() => {
     <div class="footer">
       <div class="footer-content">
         <span>@ 2026 Fast<span class="highlight">Flow</span></span>
-        <span class="divider">|</span>
-        <span>Created By <span class="highlight footer-email">lizhengtai@360.cn</span></span>
+
       </div>
     </div>
   </div>

@@ -22,6 +22,8 @@ nexus/logs/
 nexus/config/users.json
 nexus/config/invite_codes.json
 nexus/deps/
+nexus/.nexus.pid
+nexus/.req_hash
 
 # OS
 .DS_Store
